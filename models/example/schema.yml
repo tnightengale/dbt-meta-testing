@@ -13,9 +13,17 @@ models:
 
     - name: my_second_dbt_model
       description: "A starter dbt model"
+      tests:
+        - dbt_utils.equal_rowcount:
+            compare_model: ref('my_first_dbt_model')
       columns:
           - name: id
             description: "The primary key for this table"
             tests:
                 - unique
                 - not_null
+          - name: new
+            tests:
+              - unique
+              - not_null
+

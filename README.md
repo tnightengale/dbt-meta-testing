@@ -39,6 +39,42 @@ The `+required_tests` config must be either a `dict` or `None`. All the regular 
 SELECT
 ...
 ```
+The provided dictionary can contain any column schema test as a key, followed by the minimum number of occurances which must be included on the model. In the example above, every model in the `models/marts/` path must include at least one `unique` test.
+
+Custom column-level schema tests are supported. However, in order the appear correctly in the `graph` context variable (which this package parses), they must be applied to at least one model in the project prior to compilation. 
+
+Model-level schema tests are currently _not supported_. For example the following model-level `dbt_utils.equal_rowcount` test _cannot_ currently be asserted via the configuration:
+```yaml   
+# models/schema.yml
+...
+    - name: my_second_dbt_model
+      description: ""
+      tests:
+        - dbt_utils.equal_rowcount:
+            compare_model: ref('my_first_dbt_model')
+      columns:
+          - name: id
+            description: "The primary key for this table"
+            tests:
+                - unique
+                - not_null
+                - mock_schema_test
+```
+
+Models that do not meet their configured test minimums will be listed in the error when validated via a `run-operation`:
+```
+usr@home dbt-meta-testing $ % dbt run-operation required_tests
+Running with dbt=0.18.1
+Encountered an error while running operation: Compilation Error in macro required_tests (macros/required_tests.sql)
+  Insufficient test coverage from the 'required_tests' config on the following models: 
+  Model: 'my_first_dbt_model' Test: 'not_null' Got: 1 Expected: 2
+  Model: 'my_first_dbt_model' Test: 'mock_schema_test' Got: 0 Expected: 1
+  
+  > in macro _evaluate_required_tests (macros/utils/required_tests/evaluate_required_tests.sql)
+  > called by macro required_tests (macros/required_tests.sql)
+  > called by macro required_tests (macros/required_tests.sql)
+usr@home dbt-meta-testing $ % 
+```
 
 ### **Require Docs**
 To require documentation coverage, define the `+required_docs` configuration on a model path in `dbt_project.yml`:
@@ -197,4 +233,4 @@ Usage:
 ```
 
 ## Contributions
-Contributions and feedback on this project are welcomed and encouraged. Please open an issue or start a discussion if you will to contribute. 
+Feedback on this project is welcomed and encouraged. Please open an issue or start a discussion if you would like to request a feature change or contribute to this project. 

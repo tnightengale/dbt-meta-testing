@@ -38,5 +38,5 @@ models:
       # Applies to all files under models/example/
       example:
           +materialized: view
-          +required_tests: {'unique': 1, 'not_null': 2}
+          +required_tests: {'unique': 1, 'not_null': 2, 'mock_schema_test': 1}
           +required_docs: true

@@ -1,7 +1,7 @@
 {% macro _evaluate_required_docs(models_to_evaluate) %}
 
     {# /*
-    Evaluate if each model meets required_docs config.
+    Evaluate if each model meets +required_docs config.
     */ #}
 
     {% set missing_model_errors = ["The following models are missing descriptions:"] %}

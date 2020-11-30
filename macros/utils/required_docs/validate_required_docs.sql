@@ -1,8 +1,8 @@
 {% macro _validate_required_docs(models_to_validate) %}
 
-{# /*
-Validate that all required_docs configs are bool.
-*/ #}
+    {# /*
+    Validate that all +required_docs configs are bool.
+    */ #}
 
     {{ logger('models to validate are ' ~ models_to_validate) }}
 

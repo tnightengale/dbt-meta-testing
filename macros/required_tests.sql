@@ -1,6 +1,6 @@
 {% macro required_tests() %}
 
--- Filter models with test checks
+-- Filter models with required_tests_config
 {% set filtered_models = _fetch_configured_models('required_tests') %}
 
 -- Check that all configured tests are defined

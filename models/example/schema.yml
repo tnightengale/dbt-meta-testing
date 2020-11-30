@@ -12,7 +12,7 @@ models:
                 - not_null
 
     - name: my_second_dbt_model
-      description: "A starter dbt model"
+      description: ""
       tests:
         - dbt_utils.equal_rowcount:
             compare_model: ref('my_first_dbt_model')

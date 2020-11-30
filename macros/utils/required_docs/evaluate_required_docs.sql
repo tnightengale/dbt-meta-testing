@@ -22,12 +22,12 @@
 
         {% for column in model_columns %}
 
-            {{ logger(column) }}
-            {{ logger(column) }}
-            {% if column | lower in model.columns.keys() %}
+            {% set column = column | lower %}
+
+            {% if column in model.columns.keys() %}
 
                 {{ logger(column ~ " is in " ~ model.columns.keys()) }}
-                {% if model.columns[column] == "" %}
+                {% if model.columns[column].description == "" %}
 
                     {% do missing_description_errors.append(" - " ~ model.name ~ "." ~ column) %}
 

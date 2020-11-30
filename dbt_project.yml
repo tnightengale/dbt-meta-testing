@@ -12,7 +12,9 @@ profile: 'dbt_meta_testing'
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
+
 source-paths: ["models"]
+# source-paths: ["test_models"] # TO DO: Configure via scripts for integration testing
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
 data-paths: ["data"]
@@ -28,15 +30,15 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
+# Configured for the logger macro.
 vars:
     logging_level: INFO
-# In this example config, we tell dbt to build all models in the example/ directory
-# as tables. These settings can be overridden in the individual model files
-# using the `{{ config(...) }}` macro.
-models:
-  dbt_meta_testing:
-      # Applies to all files under models/example/
-      example:
-          +materialized: view
-          +required_tests: {'unique': 1, 'not_null': 2, 'mock_schema_test': 1}
-          +required_docs: true
+
+# TO DO: Configure via scripts for integration testing
+# models:
+#   dbt_meta_testing:
+#       # Applies to all files under models/example/
+#       example:
+#           +materialized: view
+#           +required_tests: {'unique': 1, 'not_null': 2, 'mock_schema_test': 1}
+#           +required_docs: true

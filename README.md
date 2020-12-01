@@ -1,6 +1,4 @@
-# Quality dbt!
-** NOTE: This package is in its alpha release.** 
-
+# dbt Meta Testing
 This dbt package contains macros to assert test and documentation coverage from `dbt_project.yml` configuration settings.
 
 ## Install
@@ -9,14 +7,14 @@ Include in `packages.yml`:
 ```yaml
 packages:
   - git: "https://github.com/tnightengale/quality-assurance-dbt"
-    revision: <for latest release, see https://github.com/tnightengale/quality-assurance-dbt/releases>
+    revision: 0.1.2
 ```
 For latest release, see https://github.com/tnightengale/quality-assurance-dbt/releases.
 
 ## Configurations
 This package features two meta configs that can be applied to a dbt project: `+required_tests` and `+required_docs`. Read the dbt documentation [here](https://docs.getdbt.com/reference/model-configs) to learn more about model configurations in dbt.
 
-### **Require Tests**
+### **Required Tests**
 To require test coverage, define the `+required_tests` configuration on a model path in `dbt_project.yml`:
 ```yaml
 # dbt_project.yml
@@ -29,7 +27,7 @@ models:
             +required_tests: {"unique": 1}
 ```
 
-The `+required_tests` config must be either a `dict` or `None`. All the regular configuration override rules are the same. For example, individual model configs will override configs from the `dbt_project.yml`:
+The `+required_tests` config must be either a `dict` or `None`. All the regular dbt configuration hierarchy rules apply. For example, individual model configs will override configs from the `dbt_project.yml`:
 ```sql
 -- /models/marts/core/your_model.sql
 {{
@@ -76,7 +74,7 @@ Encountered an error while running operation: Compilation Error in macro require
 usr@home dbt-meta-testing $ % 
 ```
 
-### **Require Docs**
+### **Required Docs**
 To require documentation coverage, define the `+required_docs` configuration on a model path in `dbt_project.yml`:
 ```yaml
 # dbt_project.yml
@@ -88,7 +86,7 @@ models:
 The `+required_docs` config must be a `bool`.
 
 When applied to a model, this config will ensure 3 things:
-1. The _model_ has a non-empty descriptions:
+1. The _model_ has a non-empty description
 2. The _columns_ in the model are specified in the model `.yml`
 3. The _columns_ specified in the model `.yml` have non-empty descriptions
 
@@ -173,15 +171,13 @@ For example, to run only changed models using dbt's Slim CI feature:
 $ dbt run-operation required_tests --vars "{'models':'$(dbt list -m state:modified --state <filepath>)'}"
 ```
 
-Alternatively, if you use git-diff to find changed models, a space delimited string of model names will work as well:
+Alternatively, it's possible to use `git diff` to find changed models; a space delimited string of model names will work as well:
 ```bash
 $ dbt run-operation required_tests --vars "{'models':'model1 model2 model3'}"
 ```
 
 ### required_tests ([source](macros/required_tests.sql))
-Validates that models meet the `+required_tests` configurations applied in `dbt_project.yml`. 
-
-Can be used as a `run-operation` early in the CI/CD pipeline.
+Validates that models meet the `+required_tests` configurations applied in `dbt_project.yml`. Typically used only as a `run-operation` in a CI pipeline.
 
 Usage:
 ```
@@ -189,9 +185,8 @@ $ dbt run-operation required_tests [--vars "{'models': '<space_delimited_models>
 ```
 
 ### required_docs ([source](macros/required_tests.sql))
-Validates that models meet the `+required_docs` configurations applied in `dbt_project.yml`. 
+Validates that models meet the `+required_docs` configurations applied in `dbt_project.yml`. Typically used only as a `run-operation` in a CI pipeline.
 
-Can be used as a `run-operation` early in the CI/CD pipeline.
 
 Usage:
 ```

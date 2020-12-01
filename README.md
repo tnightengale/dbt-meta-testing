@@ -9,7 +9,7 @@ packages:
   - git: "https://github.com/tnightengale/quality-assurance-dbt"
     revision: 0.1.2
 ```
-For latest release, see https://github.com/tnightengale/quality-assurance-dbt/releases.
+For latest release, see https://github.com/tnightengale/dbt-meta-testing/releases.
 
 ## Configurations
 This package features two meta configs that can be applied to a dbt project: `+required_tests` and `+required_docs`. Read the dbt documentation [here](https://docs.getdbt.com/reference/model-configs) to learn more about model configurations in dbt.

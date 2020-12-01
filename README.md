@@ -192,6 +192,7 @@ Usage:
 ```
 $ dbt run-operation required_docs [--vars "{'models': '<space_delimited_models>'}"]
 ```
+**Note:** Run this command _after_ `dbt run`: only models that already exist in the warehouse can be validated for columns that are missing from the model `.yml`.
 
 ### logger ([source](macros/logger.sql))
 An ammenity macro that mimics pythons logging module. The level is passed via the `log_level` kwarg. The default "method" (ie. `log_level`) is `DEBUG`, similar to calling `logging.debug('some buggy thing')` in python.

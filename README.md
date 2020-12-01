@@ -39,7 +39,7 @@ SELECT
 ```
 The provided dictionary can contain any column schema test as a key, followed by the minimum number of occurances which must be included on the model. In the example above, every model in the `models/marts/` path must include at least one `unique` test.
 
-Custom column-level schema tests are supported. However, in order the appear correctly in the `graph` context variable (which this package parses), they must be applied to at least one model in the project prior to compilation. 
+Custom column-level schema tests are supported. However, in order to appear in the `graph` context variable (which this package parses), they must be applied to at least one model in the project prior to compilation. 
 
 Model-level schema tests are currently _not supported_. For example the following model-level `dbt_utils.equal_rowcount` test _cannot_ currently be asserted via the configuration:
 ```yaml   

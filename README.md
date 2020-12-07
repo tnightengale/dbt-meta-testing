@@ -61,7 +61,7 @@ Model-level schema tests are currently _not supported_. For example the followin
 
 Models that do not meet their configured test minimums will be listed in the error when validated via a `run-operation`:
 ```
-usr@home dbt-meta-testing $ % dbt run-operation required_tests
+usr@home dbt-meta-testing $ dbt run-operation required_tests
 Running with dbt=0.18.1
 Encountered an error while running operation: Compilation Error in macro required_tests (macros/required_tests.sql)
   Insufficient test coverage from the 'required_tests' config on the following models: 
@@ -71,7 +71,7 @@ Encountered an error while running operation: Compilation Error in macro require
   > in macro _evaluate_required_tests (macros/utils/required_tests/evaluate_required_tests.sql)
   > called by macro required_tests (macros/required_tests.sql)
   > called by macro required_tests (macros/required_tests.sql)
-usr@home dbt-meta-testing $ % 
+usr@home dbt-meta-testing $ 
 ```
 
 ### **Required Docs**

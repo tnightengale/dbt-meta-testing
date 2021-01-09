@@ -9,7 +9,6 @@ profile: 'dbt_meta_testing'
 
 # Configuration paths.
 source-paths: ["models"]
-# source-paths: ["test_models"] # TO DO: Configure via scripts for integration testing
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
 data-paths: ["data"]
@@ -24,12 +23,3 @@ clean-targets:
 # Configured for the logger macro.
 vars:
     logging_level: INFO
-
-# TO DO: Configure via scripts for integration testing
-# models:
-#   dbt_meta_testing:
-#       # Applies to all files under models/example/
-#       example:
-#           +materialized: view
-#           +required_tests: {'unique': 1, 'not_null': 2, 'mock_schema_test': 1}
-#           +required_docs: true

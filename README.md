@@ -1,3 +1,5 @@
+https://github.com/tnightengale/dbt-meta-testing/workflows/Integration%20Tests/badge.svg
+
 # dbt Meta Testing
 This dbt package contains macros to assert test and documentation coverage from `dbt_project.yml` configuration settings.
 
@@ -230,3 +232,12 @@ Usage:
 
 ## Contributions
 Feedback on this project is welcomed and encouraged. Please open an issue or start a discussion if you would like to request a feature change or contribute to this project. 
+
+## Testing
+The integration tests for this package are located at [./integration_tests/scripts/test.sh](integration_tests/scripts/test.sh).
+
+To run the tests locally, ensure you have the correct environment variables set according to the targets in [./integration_tests/profiles.yml](integration_tests/profiles.yml).
+
+### Verified Warehouses
+This package has been tested for the following databases:
+ - Snowflake

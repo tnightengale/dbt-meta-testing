@@ -1,0 +1,34 @@
+name: Integration Tests
+on:
+  push:
+    branches: master
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    working-dir: ./integration_tests
+    DBT_PROFILES_DIR: . # Use integration_tests/profiles.yml
+
+    steps:
+    - name: Checkout Branch
+      uses: actions/checkout@v2
+   
+    - name: Install Python
+      uses: actions/setup-python@v2
+      with: 
+        python-version: 3.8
+    
+    - name: Install Latest dbt 
+      run: pip install dbt
+
+    - name: Run and Test
+      env: 
+        CI_SNOWFLAKE_DBT_DATABASE: ${{ secrets.CI_SNOWFLAKE_DBT_DATABASE }}
+        CI_SNOWFLAKE_DBT_ACCOUNT: ${{ secrets.CI_SNOWFLAKE_DBT_ACCOUNT }}
+        CI_SNOWFLAKE_DBT_USER: ${{ secrets.CI_SNOWFLAKE_DBT_USER }}
+        CI_SNOWFLAKE_DBT_PASS: ${{ secrets.CI_SNOWFLAKE_DBT_PASS }}
+        CI_SNOWFLAKE_DBT_ROLE: ${{ secrets.CI_SNOWFLAKE_DBT_ROLE }}
+        CI_SNOWFLAKE_DBT_DATABASE: ${{ secrets.CI_SNOWFLAKE_DBT_DATABASE }}
+        CI_SNOWFLAKE_DBT_WAREHOUSE: ${{ secrets.CI_SNOWFLAKE_DBT_WAREHOUSE }}
+      run: |
+        sh .scripts/test.sh

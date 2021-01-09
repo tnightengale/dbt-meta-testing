@@ -1,0 +1,19 @@
+
+# Project Name
+name: dbt_meta_testing_integration_tests
+version: '1.0.0'
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'integration_tests'
+
+config-version: 2
+
+source-paths: ["models"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_modules"]
+
+models:
+  dbt_meta_testing_integration_tests:
+    +required_docs: false

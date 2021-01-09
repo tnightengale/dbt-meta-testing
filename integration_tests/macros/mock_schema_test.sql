@@ -2,6 +2,5 @@
 
 SELECT
     1 AS p
-WHERE p <> 1
 
 {% endmacro %}

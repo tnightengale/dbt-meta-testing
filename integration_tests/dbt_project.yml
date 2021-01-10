@@ -10,6 +10,7 @@ config-version: 2
 
 source-paths: ["models"]
 macro-paths: ["macros"]
+test-paths: ["tests"]
 
 target-path: "target"
 clean-targets: ["target", "dbt_modules"]

@@ -4,9 +4,9 @@
     Evaluate if each model meets +required_docs config.
     */ #}
 
-    {% set missing_model_errors = ["The following models are missing descriptions:"] %}
-    {% set missing_columns_errors = ["The following columns are missing from the model yml:"] %}
-    {% set missing_description_errors = ["The following columns are present in the model yml, but have blank descriptions:"] %}
+    {% set missing_model_errors = [] %}
+    {% set missing_columns_errors = [] %}
+    {% set missing_description_errors = [] %}
 
     {% for model in models_to_evaluate %}
 
@@ -16,7 +16,7 @@
 
         {% if model.description == "" %}
 
-            {% do missing_model_errors.append(" - " ~ model.name) %}
+            {% do missing_model_errors.append(model.name) %}
 
         {% endif %}
 
@@ -29,13 +29,13 @@
                 {{ logger(column ~ " is in " ~ model.columns.keys()) }}
                 {% if model.columns[column].description == "" %}
 
-                    {% do missing_description_errors.append(" - " ~ model.name ~ "." ~ column) %}
+                    {% do missing_description_errors.append((model.name, column)) %}
 
                 {% endif %}
             
             {% else %}
 
-                {% do missing_columns_errors.append(" - " ~ model.name ~ "." ~ column) %}
+                {% do missing_columns_errors.append((model.name, column)) %}
 
             {% endif %}
 
@@ -43,35 +43,19 @@
 
     {% endfor %}
 
-    {% set no_errors = [] %}
+    {% set errors = missing_model_errors + missing_columns_errors + missing_description_errors %}
+    {% if errors | length > 0 %}
 
         {{ logger(missing_model_errors) }}
         {{ logger(missing_columns_errors) }}
         {{ logger(missing_description_errors) }}
 
-    {% if missing_model_errors | length == 1 %}
-
-        {% do no_errors.append(missing_model_errors.pop()) %}{% endif %}
-
-    {% if missing_columns_errors | length == 1 %}
-
-        {% do no_errors.append(missing_columns_errors.pop()) %}{% endif %}
-
-    {% if missing_description_errors | length == 1 %}
-
-        {% do no_errors.append(missing_description_errors.pop()) %}{% endif %}
-
-    {% if no_errors | length < 3 %}
-
-        {{ logger("no_errors < 3 == True") }}
-        {{ logger(missing_model_errors) }}
-        {{ logger(missing_columns_errors) }}
-        {{ logger(missing_description_errors) }}
-
-        {% set all_errors = missing_model_errors + missing_columns_errors + missing_description_errors %}
-        {{ logger(all_errors) }}
-
-        {{ exceptions.raise_compiler_error( all_errors| join("\n")) }}
+        {{ _error_handler(
+            "ERROR REQUIRED DOCS", 
+            models_missing_descriptions=missing_model_errors, 
+            models_missing_columns=missing_columns_errors,
+            columns_missing_descriptions=missing_description_errors)
+        }}
 
     {% endif %}
 

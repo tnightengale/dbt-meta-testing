@@ -47,11 +47,11 @@ Model-level schema tests are currently _not supported_. For example the followin
 ```yaml   
 # models/schema.yml
 ...
-    - name: my_second_dbt_model
+    - name: model_2
       description: ""
       tests:
         - dbt_utils.equal_rowcount:
-            compare_model: ref('my_first_dbt_model')
+            compare_model: ref('model_1')
       columns:
           - name: id
             description: "The primary key for this table"
@@ -67,8 +67,8 @@ usr@home dbt-meta-testing $ % dbt run-operation required_tests
 Running with dbt=0.18.1
 Encountered an error while running operation: Compilation Error in macro required_tests (macros/required_tests.sql)
   Insufficient test coverage from the 'required_tests' config on the following models: 
-  Model: 'my_first_dbt_model' Test: 'not_null' Got: 1 Expected: 2
-  Model: 'my_first_dbt_model' Test: 'mock_schema_test' Got: 0 Expected: 1
+  Model: 'model_1' Test: 'not_null' Got: 1 Expected: 2
+  Model: 'model_1' Test: 'mock_schema_test' Got: 0 Expected: 1
   
   > in macro _evaluate_required_tests (macros/utils/required_tests/evaluate_required_tests.sql)
   > called by macro required_tests (macros/required_tests.sql)
@@ -98,7 +98,7 @@ For example, the following configurations:
 version: 2
 
 models:
-    - name: my_first_dbt_model
+    - name: model_1
       description: "A starter dbt model"
       columns:
           - name: id
@@ -107,11 +107,11 @@ models:
                 - unique
                 - not_null
 
-    - name: my_second_dbt_model
+    - name: model_2
       description: ""
       tests:
         - dbt_utils.equal_rowcount:
-            compare_model: ref('my_first_dbt_model')
+            compare_model: ref('model_1')
       columns:
           - name: id
             description: "The primary key for this table"
@@ -121,13 +121,13 @@ models:
 
 ```
 
-Where `my_second_dbt_model` has a column `new` which is not defined in the `.yml` above:
+Where `model_2` has a column `new` which is not defined in the `.yml` above:
 ```sql
--- models/example/my_second_dbt_model.sql
+-- models/example/model_2.sql
 select 
     *,
     'new' as new
-from {{ ref('my_first_dbt_model') }}
+from {{ ref('model_1') }}
 where id = 1
 ```
 
@@ -147,11 +147,11 @@ usr@home dbt-meta-testing $ dbt run-operation required_docs
 Running with dbt=0.18.1
 Encountered an error while running operation: Compilation Error in macro required_docs (macros/required_docs.sql)
   The following models are missing descriptions:
-   - my_second_dbt_model
+   - model_2
   The following columns are missing from the model yml:
-   - my_second_dbt_model.new
+   - model_2.new
   The following columns are present in the model yml, but have blank descriptions:
-   - my_first_dbt_model.id
+   - model_1.id
   
   > in macro _evaluate_required_docs (macros/utils/required_docs/evaluate_required_docs.sql)
   > called by macro required_docs (macros/required_docs.sql)

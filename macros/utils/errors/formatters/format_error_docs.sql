@@ -1,7 +1,7 @@
-{% macro _error_formatter(error_list) %}
+{% macro _format_error_docs(error_list) %}
 
 {# /*
-Formats a list of either strings or tuples into a bulleted list for error output.
+Formats a list of either strings or tuples into a bulleted list for error output in _error_required_docs.
 */ #}
 
     {% set output_list = [] %}

@@ -5,7 +5,7 @@
     */ #}
 
     {% set tests_per_model = _tests_per_model() %}
-    {% set errors = [] %}
+    {% set test_errors = [] %}
 
     {{ logger("models_to_evaluate: " ~ models_to_evaluate | map(attribute="name") | list) }}
     {% for model in models_to_evaluate %}
@@ -32,11 +32,9 @@
                     " required_test_count: " ~ required_test_count) }}
 
                 {% if provided_test_count < required_test_count %} 
-                    {% do errors.append(
-                        "Model: '" ~ model.name ~ 
-                        "' Test: '" ~ test_key ~ "' Got: " ~ provided_test_count ~
-                        " Expected: "  ~ required_test_count
-                    ) %}
+
+                    {% do test_errors.append((model.name, test_key, provided_test_count, required_test_count)) %}
+
                 {% endif %}
             
             {% endfor %}
@@ -46,12 +44,9 @@
     {% endfor %}
 
 
-    {% if errors | length > 0 %}
+    {% if test_errors | length > 0 %}
 
-        {{ exceptions.raise_compiler_error(
-            "Insufficient test coverage from the 'required_tests' config on the following models: \n"
-            ~ errors | join('\n')
-        ) }} 
+        {{ _error_required_tests(test_errors) }}
 
     {% endif %}
 

@@ -10,10 +10,7 @@
 
         {% if not model.config.required_docs is boolean %}
 
-            {{ exceptions.raise_compiler_error(
-                "Invalid 'required_docs' configuration. " ~
-                "Expected boolean. Received: '" ~ _config ~ "' " ~
-                "on model '" ~ _model ~ "'") }}
+            {{ _error_invalid_config_docs(_config, _model.name) }}
 
         {% endif %}
 

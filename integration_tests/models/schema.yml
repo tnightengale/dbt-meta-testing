@@ -2,7 +2,7 @@
 version: 2
 
 models:
-    - name: my_first_dbt_model
+    - name: model_1
       description: "A starter dbt model"
       columns:
           - name: id
@@ -11,11 +11,11 @@ models:
                 - unique
                 - not_null
 
-    - name: my_second_dbt_model
+    - name: model_2
       description: ""
       tests:
         - dbt_utils.equal_rowcount:
-            compare_model: ref('my_first_dbt_model')
+            compare_model: ref('model_1')
       columns:
           - name: id
             description: "The primary key for this table"

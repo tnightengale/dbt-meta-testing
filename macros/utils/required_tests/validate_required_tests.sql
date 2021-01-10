@@ -32,10 +32,7 @@
         ß
         {% else %}
 
-            {{ exceptions.raise_compiler_error(
-                "Invalid 'required_tests' configuration. " ~
-                "Expected dict or None. Received: '" ~ _config ~ "' " ~
-                "on model '" ~ _model ~ "'") }}
+            {{ _errors_invalid_config_tests(_config, _model.name) }}
         
         {% endif %}
 
@@ -68,8 +65,7 @@
 
         {% if required_test not in unique_defined_tests %}
 
-            {{ exceptions.raise_compiler_error(
-                "Invalid +required_tests config. Could not find test: '" ~ required_test ~ "'") }}
+            {{ _error_invalid_config_missing_test(required_test) }}
 
         {% endif %}
 

@@ -1,8 +1,0 @@
-Running with dbt=0.18.1
-Encountered an error while running operation: Compilation Error in macro required_docs (macros/required_docs.sql)
-  The following columns are present in the model yml, but have blank descriptions:
-   - my_first_dbt_model.id
-  
-  > in macro _evaluate_required_docs (macros/utils/required_docs/evaluate_required_docs.sql)
-  > called by macro required_docs (macros/required_docs.sql)
-  > called by macro required_docs (macros/required_docs.sql)

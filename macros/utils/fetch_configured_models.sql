@@ -32,7 +32,7 @@
 
             /* 
             Assumes "." delimited string is output from `dbt list` and the last
-            delimitee is the model name, eg. dbt_meta_testing.example.my_first_dbt_model
+            delimitee is the model name, eg. dbt_meta_testing.example.model_1
             */
             {% if "." in m %} {% set m = m.split(".")[-1] %} {% endif %}
 

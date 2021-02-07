@@ -22,3 +22,6 @@ models:
       +required_tests: {"unique": 1}
     marts:
       +required_tests: true
+
+vars:
+  running_intergration_tests: true

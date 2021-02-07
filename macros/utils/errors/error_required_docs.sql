@@ -16,7 +16,7 @@
     {% do all_errors.append("The following columns are missing from the model yml:") %}
     {% do all_errors.append(_format_error_docs(kwargs.columns_missing_descriptions)) %}{% endif %}
 
-{{ exceptions.raise_compiler_error(all_errors | join("\n")) }}
+{{ _format_raise_error(all_errors | join("\n")) }}
 
 {% endmacro %}
 

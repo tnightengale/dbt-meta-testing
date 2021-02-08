@@ -20,6 +20,6 @@ clean-targets:
     - "target"
     - "dbt_modules"
 
-# Configured for the logger macro.
+# Configured for the dbt_meta_testing.logger macro.
 vars:
     logging_level: INFO

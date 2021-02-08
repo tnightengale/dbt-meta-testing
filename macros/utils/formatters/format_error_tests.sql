@@ -1,16 +1,20 @@
-{% macro _format_error_tests(error_list) %}
+{% macro format_error_tests(error_list) %}
+	{{ return(adapter.dispatch("format_error_tests", packages=dbt_meta_testing._get_meta_test_namespaces())(error_list))}}
+{% endmacro %}
+
+{% macro default__format_error_tests(error_list) %}
 
 {# /*
-Formats a list of tuples into a bulleted list for error output in _error_required_tests.
+Formats a list of tuples into a bulleted list for error output in error_required_tests.
 */ #}
 
     {% set output_list = [] %}
 
-    {% for _obj in error_list %}
+    {% for obj in error_list %}
 
-        {% if _obj is iterable %}
+        {% if obj is iterable %}
 
-            {% do output_list.append("- Model: '" ~ _obj[0] ~ "' Test: '" ~ _obj[1] ~ "' Got: " ~ _obj[2] ~ " Expected: "  ~ _obj[3]) %}
+            {% do output_list.append("- Model: '" ~ obj[0] ~ "' Test: '" ~ obj[1] ~ "' Got: " ~ obj[2] ~ " Expected: "  ~ obj[3]) %}
 
         {% else %}
 

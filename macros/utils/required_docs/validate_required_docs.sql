@@ -1,16 +1,20 @@
-{% macro _validate_required_docs(models_to_validate) %}
+{% macro validate_required_docs(models_to_validate) %}
+	{{ return(adapter.dispatch("validate_required_docs", packages=dbt_meta_testing._get_meta_test_namespaces())(models_to_validate))}}
+{% endmacro %}
+
+{% macro default__validate_required_docs(models_to_validate) %}
 
     {# /*
     Validate that all +required_docs configs are bool.
     */ #}
 
-    {{ logger('models to validate are ' ~ models_to_validate) }}
+    {{ dbt_meta_testing.logger('models to validate are ' ~ models_to_validate) }}
 
     {% for model in models_to_validate %}
 
         {% if not model.config.required_docs is boolean %}
 
-            {{ _error_invalid_config_docs(_config, _model.name) }}
+            {{ dbt_meta_testing.error_invalid_config_docs(config, model.name) }}
 
         {% endif %}
 

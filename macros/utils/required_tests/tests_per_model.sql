@@ -1,5 +1,9 @@
 
-{% macro _tests_per_model() %}
+{% macro tests_per_model() %}
+	{{ return(adapter.dispatch("tests_per_model", packages=dbt_meta_testing._get_meta_test_namespaces())())}}
+{% endmacro %}
+
+{% macro default__tests_per_model() %}
 
     {# /*
     Construct a dict of all models and their tests in the current project.
@@ -7,11 +11,11 @@
 
     {% set tests_per_model = {} %}
 
-    {% set all_tests = _fetch_configured_models("enabled", "test") %}
+    {% set all_tests = fetch_configured_models("enabled", "test") %}
 
     {% for test_node in all_tests %}
 
-        {{ logger('loop ' ~ loop.index ~ ' test_node ' ~ test_node.test_metadata.name) }}
+        {{ dbt_meta_testing.logger('loop ' ~ loop.index ~ ' test_node ' ~ test_node.test_metadata.name) }}
 
         {% for dependent_model in test_node.depends_on.nodes %}
             {% if dependent_model.startswith('model.') %}
@@ -38,7 +42,7 @@
 
     {% endfor %}
                 
-    {{ logger('tests_per_model is ' ~ tests_per_model) }}
+    {{ dbt_meta_testing.logger('tests_per_model is ' ~ tests_per_model) }}
     {{ return(tests_per_model) }}
 
 {% endmacro %}

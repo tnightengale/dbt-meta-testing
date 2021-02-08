@@ -1,9 +1,13 @@
-{% macro _fetch_configured_models(meta_config, resource_type="model") %}
+{% macro fetch_configured_models(meta_config, resource_type="model") %}
+	{{ return(adapter.dispatch("fetch_configured_models", packages=dbt_meta_testing._get_meta_test_namespaces())(meta_config, resource_type="model")) }}
+{% endmacro %}
+
+{% macro default__fetch_configured_models(meta_config, resource_type="model") %}
 
     {% set configured_models = [] %}
 
     {% set models = var("models", None) %}
-    {{ logger("var `models` is: " ~ models) }}
+    {{ dbt_meta_testing.logger("var `models` is: " ~ models) }}
 
     {% for node in graph.nodes.values() | selectattr("resource_type", "equalto", resource_type) %}
 
@@ -27,7 +31,7 @@
         {% set final_models_list = [] %}
         {% set models_list = models.split(" ") %}
 
-        {{ logger("Building `filtered_models_list`:") }}
+        {{ dbt_meta_testing.logger("Building `filtered_models_list`:") }}
         {% for m in models_list %}
 
             /* 
@@ -37,19 +41,19 @@
             {% if "." in m %} {% set m = m.split(".")[-1] %} {% endif %}
 
             {% do filtered_models_list.append(m) %}
-            {{ logger("Appended to `filtered_models_list`: " ~ m) }}
+            {{ dbt_meta_testing.logger("Appended to `filtered_models_list`: " ~ m) }}
 
         {% endfor %}
 
-        {{ logger("`filtered_models_list` is: " ~ filtered_models_list) }}
+        {{ dbt_meta_testing.logger("`filtered_models_list` is: " ~ filtered_models_list) }}
         {% for m in configured_models %}
 
 
-            {{ logger("`filtered_models_loop: " ~ loop.index ~ " " ~ m.name in filtered_models_list)}}
+            {{ dbt_meta_testing.logger("`filtered_models_loop: " ~ loop.index ~ " " ~ m.name in filtered_models_list)}}
             {% if m.name in filtered_models_list %}
 
                 {% do final_models_list.append(m) %}
-                {{ logger("m is: " ~ m) }}
+                {{ dbt_meta_testing.logger("m is: " ~ m) }}
             
             {% endif %}
 
@@ -57,13 +61,12 @@
     
     {% else %}
 
-        {{ logger("else in fetch models triggered, configured is: " ~ configured_models) }}
+        {{ dbt_meta_testing.logger("else in fetch models triggered, configured is: " ~ configured_models) }}
         {% set final_models_list = configured_models %}
 
     {% endif %}
 
-    {{ logger("`final_models_list` is: " ~ final_models_list) }}
+    {{ dbt_meta_testing.logger("`final_models_list` is: " ~ final_models_list) }}
     {{ return(final_models_list) }}
 
 {% endmacro %}
-    

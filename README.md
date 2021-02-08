@@ -196,7 +196,7 @@ $ dbt run-operation required_docs [--vars "{'models': '<space_delimited_models>'
 ```
 **Note:** Run this command _after_ `dbt run`: only models that already exist in the warehouse can be validated for columns that are missing from the model `.yml`.
 
-### logger ([source](macros/logger.sql))
+### dbt_meta_testing.logger ([source](macros/logger.sql))
 An ammenity macro that mimics pythons logging module. The level is passed via the `log_level` kwarg. The default "method" (ie. `log_level`) is `DEBUG`, similar to calling `logging.debug('some buggy thing')` in python.
 
 
@@ -218,14 +218,14 @@ Usage:
 {% if my_object is mapping %}
 
      -- This will be a DEBUG call by default, it won't show up if logging_level="INFO" or higher
-    {{ logger("my_object is mapping: " ~ my_object is mapping) }}
+    {{ dbt_meta_testing.logger("my_object is mapping: " ~ my_object is mapping) }}
 
     ...
 
 {% endif %}
 
 -- This will be an INFO call, it will show up if logging_level="INFO" or lower
-{{ logger("The following keys were found: " ~ my_complex_object.keys(), log_level="INFO") }}
+{{ dbt_meta_testing.logger("The following keys were found: " ~ my_complex_object.keys(), log_level="INFO") }}
 
 {{ return(my_complex_object) }}
 ```

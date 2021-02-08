@@ -1,4 +1,8 @@
-{% macro _evaluate_required_docs(models_to_evaluate) %}
+{% macro evaluate_required_docs(models_to_evaluate) %}
+	{{ return(adapter.dispatch("evaluate_required_docs", packages=dbt_meta_testing._get_meta_test_namespaces())(models_to_evaluate))}}
+{% endmacro %}
+
+{% macro default__evaluate_required_docs(models_to_evaluate) %}
 
     {# /*
     Evaluate if each model meets +required_docs config.
@@ -14,7 +18,7 @@
             
             {% set model_columns = adapter.get_columns_in_relation(ref(model.package_name, model.name)) 
                 | map(attribute="column") | list %}
-            {{ logger(model_columns | map(attribute="column") | list) }}
+            {{ dbt_meta_testing.logger(model_columns | map(attribute="column") | list) }}
 
             {% if model.description == "" %}
 
@@ -28,7 +32,7 @@
 
                 {% if column in model.columns.keys() %}
 
-                    {{ logger(column ~ " is in " ~ model.columns.keys()) }}
+                    {{ dbt_meta_testing.logger(column ~ " is in " ~ model.columns.keys()) }}
                     {% if model.columns[column].description == "" %}
 
                         {% do missing_description_errors.append((model.name, column)) %}
@@ -50,11 +54,11 @@
     {% set errors = missing_model_errors + missing_columns_errors + missing_description_errors %}
     {% if errors | length > 0 %}
 
-        {{ logger(missing_model_errors) }}
-        {{ logger(missing_columns_errors) }}
-        {{ logger(missing_description_errors) }}
+        {{ dbt_meta_testing.logger(missing_model_errors) }}
+        {{ dbt_meta_testing.logger(missing_columns_errors) }}
+        {{ dbt_meta_testing.logger(missing_description_errors) }}
 
-        {{ _error_required_docs(
+        {{ dbt_meta_testing.error_required_docs(
             models_missing_descriptions=missing_model_errors, 
             models_missing_columns=missing_columns_errors,
             columns_missing_descriptions=missing_description_errors)

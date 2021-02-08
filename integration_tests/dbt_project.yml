@@ -25,3 +25,4 @@ models:
 
 vars:
   running_intergration_tests: true
+  dbt_meta_test_dispatch_list: ["dbt_meta_testing_integration_tests"]

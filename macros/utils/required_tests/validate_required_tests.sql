@@ -1,38 +1,42 @@
-{% macro _validate_required_tests(models_to_validate) %}
+{% macro validate_required_tests(models_to_validate) %}
+	{{ return(adapter.dispatch("validate_required_tests", packages=dbt_meta_testing._get_meta_test_namespaces())(models_to_validate))}}
+{% endmacro %}
+
+{% macro default__validate_required_tests(models_to_validate) %}
 
     {# /*
     Validate that all +required_tests configs are either dict or None 
     and that all keys in a dict are defined tests.
     */ #}
 
-    {{ logger('models to validate are ' ~ models_to_validate) }}
+    {{ dbt_meta_testing.logger('models to validate are ' ~ models_to_validate) }}
 
     -- Fetch unique tests from +required_tests config
     {% set all_required_tests = [] %}
 
-    {% for _model in models_to_validate %}
+    {% for model in models_to_validate %}
 
-        {% set _config = _model.config.required_tests %}
+        {% set config = model.config.required_tests %}
 
-        {{ logger('_config is: ' ~ _config) }}
+        {{ dbt_meta_testing.logger('config is: ' ~ config) }}
 
-        -- Validate that _config is dict or none
-        {% if _config is mapping %}
+        -- Validate that config is dict or none
+        {% if config is mapping %}
 
-            {% for _k in _config.keys() %} 
+            {% for k in config.keys() %} 
 
-                {% do all_required_tests.append(_k) %}
+                {% do all_required_tests.append(k) %}
 
             {% endfor %}
         
-        {% elif _config is none %}
+        {% elif config is none %}
             
             -- Pass
-            {{ logger("_model '" ~ _model.name ~ "' has required_tests=null") }}
+            {{ dbt_meta_testing.logger("model '" ~ model.name ~ "' has required_tests=null") }}
         ß
         {% else %}
 
-            {{ _errors_invalid_config_tests(_config, _model.name) }}
+            {{ dbt_meta_testing.errors_invalid_config_tests(config, model.name) }}
         
         {% endif %}
 
@@ -41,7 +45,7 @@
 
     {% set unique_required_tests = all_required_tests | unique | list %}
 
-    {{ logger('unique_required_tests: ' ~ unique_required_tests) }}
+    {{ dbt_meta_testing.logger('unique_required_tests: ' ~ unique_required_tests) }}
 
 
     -- Fetch unique defined tests from graph
@@ -53,7 +57,7 @@
         | map(attribute="name") 
         | unique %}
 
-        {{ logger('test name ' ~ loop.index ~ ' ' ~ test_name) }}
+        {{ dbt_meta_testing.logger('test name ' ~ loop.index ~ ' ' ~ test_name) }}
 
         {% do unique_defined_tests.append(test_name) %}
 
@@ -65,7 +69,7 @@
 
         {% if required_test not in unique_defined_tests %}
 
-            {{ _error_invalid_config_missing_test(required_test) }}
+            {{ dbt_meta_testing.error_invalid_config_missing_test(required_test) }}
 
         {% endif %}
 

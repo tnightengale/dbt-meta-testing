@@ -8,7 +8,8 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     working-dir: ./integration_tests
-    DBT_PROFILES_DIR: . # Use integration_tests/profiles.yml
+    env:
+      DBT_PROFILES_DIR: . # Use integration_tests/profiles.yml
 
     steps:
     - name: Checkout Branch
@@ -32,6 +33,5 @@ jobs:
         CI_SNOWFLAKE_DBT_DATABASE: ${{ secrets.CI_SNOWFLAKE_DBT_DATABASE }}
         CI_SNOWFLAKE_DBT_WAREHOUSE: ${{ secrets.CI_SNOWFLAKE_DBT_WAREHOUSE }}
       run: |
-        cd integration_tests
         dbt deps
         dbt test --data

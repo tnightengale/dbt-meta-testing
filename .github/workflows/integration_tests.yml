@@ -7,7 +7,6 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    working-dir: ./integration_tests
     env:
       DBT_PROFILES_DIR: . # Use integration_tests/profiles.yml
 
@@ -23,15 +22,15 @@ jobs:
     - name: Install dbt 0.18.1
       run: pip install dbt==0.18.1
 
-    - name: Run and Test
+    - name: Run and Test Snowflake
       env: 
-        CI_SNOWFLAKE_DBT_DATABASE: ${{ secrets.CI_SNOWFLAKE_DBT_DATABASE }}
-        CI_SNOWFLAKE_DBT_ACCOUNT: ${{ secrets.CI_SNOWFLAKE_DBT_ACCOUNT }}
         CI_SNOWFLAKE_DBT_USER: ${{ secrets.CI_SNOWFLAKE_DBT_USER }}
         CI_SNOWFLAKE_DBT_PASS: ${{ secrets.CI_SNOWFLAKE_DBT_PASS }}
-        CI_SNOWFLAKE_DBT_ROLE: ${{ secrets.CI_SNOWFLAKE_DBT_ROLE }}
-        CI_SNOWFLAKE_DBT_DATABASE: ${{ secrets.CI_SNOWFLAKE_DBT_DATABASE }}
-        CI_SNOWFLAKE_DBT_WAREHOUSE: ${{ secrets.CI_SNOWFLAKE_DBT_WAREHOUSE }}
+        CI_SNOWFLAKE_DBT_ACCOUNT: ji05487.us-east-2.aws
+        CI_SNOWFLAKE_DBT_ROLE: ACCOUNTADMIN
+        CI_SNOWFLAKE_DBT_DATABASE: ANALYTICS
+        CI_SNOWFLAKE_DBT_WAREHOUSE: COMPUTE_WH
       run: |
+        cd integration_tests
         dbt deps
         dbt test --data

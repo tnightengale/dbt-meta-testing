@@ -1,8 +1,9 @@
 name: Integration Tests
 on:
-  push:
-    branches: master
-
+  # Triggers the workflow on push or pull request events but only for the master branch
+  pull_request:
+    branches: [ master ]
+    
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -18,8 +19,8 @@ jobs:
       with: 
         python-version: 3.8
     
-    - name: Install Latest dbt 
-      run: pip install dbt
+    - name: Install dbt 0.18.1
+      run: pip install dbt==0.18.1
 
     - name: Run and Test
       env: 
@@ -31,4 +32,6 @@ jobs:
         CI_SNOWFLAKE_DBT_DATABASE: ${{ secrets.CI_SNOWFLAKE_DBT_DATABASE }}
         CI_SNOWFLAKE_DBT_WAREHOUSE: ${{ secrets.CI_SNOWFLAKE_DBT_WAREHOUSE }}
       run: |
-        sh .scripts/test.sh
+        cd integration_tests
+        dbt deps
+        dbt test --data

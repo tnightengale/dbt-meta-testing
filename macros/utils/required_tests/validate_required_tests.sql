@@ -11,6 +11,7 @@
 
     {{ dbt_meta_testing.logger('models to validate are ' ~ models_to_validate) }}
 
+    -- # TO DO: break out into function that asserts against a contract
     -- Fetch unique tests from +required_tests config
     {% set all_required_tests = [] %}
 
@@ -33,10 +34,10 @@
             
             -- Pass
             {{ dbt_meta_testing.logger("model '" ~ model.name ~ "' has required_tests=null") }}
-        ß
+        
         {% else %}
 
-            {{ dbt_meta_testing.errors_invalid_config_tests(config, model.name) }}
+            {{ return(dbt_meta_testing.errors_invalid_config_tests(config, model.name)) }}
         
         {% endif %}
 
@@ -53,6 +54,7 @@
 
     {% for test_name in graph.nodes.values() 
         | selectattr("resource_type", "equalto", "test")
+        | selectattr("test_metadata", "defined")
         | map(attribute="test_metadata")
         | map(attribute="name") 
         | unique %}
@@ -69,10 +71,12 @@
 
         {% if required_test not in unique_defined_tests %}
 
-            {{ dbt_meta_testing.error_invalid_config_missing_test(required_test) }}
+            {{ return(dbt_meta_testing.error_invalid_config_missing_test(required_test)) }}
 
         {% endif %}
 
     {% endfor %}
+
+    {{ return(none) }}
 
 {% endmacro %}

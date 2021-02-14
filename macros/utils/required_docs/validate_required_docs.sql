@@ -14,10 +14,12 @@
 
         {% if not model.config.required_docs is boolean %}
 
-            {{ dbt_meta_testing.error_invalid_config_docs(config, model.name) }}
+            {{ return(dbt_meta_testing.error_invalid_config_docs(config, model.name)) }}
 
         {% endif %}
 
     {% endfor %}
+
+    {{ return(none) }}
 
 {% endmacro %}

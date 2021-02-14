@@ -58,12 +58,19 @@
         {{ dbt_meta_testing.logger(missing_columns_errors) }}
         {{ dbt_meta_testing.logger(missing_description_errors) }}
 
-        {{ dbt_meta_testing.error_required_docs(
-            models_missing_descriptions=missing_model_errors, 
-            models_missing_columns=missing_columns_errors,
-            columns_missing_descriptions=missing_description_errors)
-        }}
+        {% set result = dbt_meta_testing.error_required_docs(
+            missing_model_errors, 
+            missing_columns_errors, 
+            missing_description_errors
+            )
+        %}
+
+    {% else %}
+
+        {% set result = none %}
 
     {% endif %}
+
+    {{ return(result) }}
 
 {% endmacro %}

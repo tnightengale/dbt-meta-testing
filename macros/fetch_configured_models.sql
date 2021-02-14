@@ -1,12 +1,11 @@
-{% macro fetch_configured_models(meta_config, resource_type="model") %}
-	{{ return(adapter.dispatch("fetch_configured_models", packages=dbt_meta_testing._get_meta_test_namespaces())(meta_config, resource_type="model")) }}
+{% macro fetch_configured_models(meta_config, models=none, resource_type="model") %}
+	{{ return(adapter.dispatch("fetch_configured_models", packages=dbt_meta_testing._get_meta_test_namespaces())(meta_config, models, resource_type)) }}
 {% endmacro %}
 
-{% macro default__fetch_configured_models(meta_config, resource_type="model") %}
+{% macro default__fetch_configured_models(meta_config, models, resource_type) %}
 
     {% set configured_models = [] %}
 
-    {% set models = var("models", None) %}
     {{ dbt_meta_testing.logger("var `models` is: " ~ models) }}
 
     {% for node in graph.nodes.values() | selectattr("resource_type", "equalto", resource_type) %}

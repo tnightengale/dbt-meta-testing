@@ -18,7 +18,6 @@
         {% if model.config.required_tests is mapping %}
         {{ dbt_meta_testing.logger(model.name ~ " if reached") }}
 
-
             {% for test_key in model.config.required_tests.keys() %}
 
                 -- If the model has less tests than required by the config
@@ -50,8 +49,14 @@
 
     {% if test_errors | length > 0 %}
 
-        {{ dbt_meta_testing.error_required_tests(test_errors) }}
+        {% set result = dbt_meta_testing.error_required_tests(test_errors) %}
+
+    {% else %}
+
+        {% set result = none %}
 
     {% endif %}
+
+    {{ return(result) }}
 
 {% endmacro %}

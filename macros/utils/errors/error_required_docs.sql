@@ -1,25 +1,36 @@
-{% macro error_required_docs() %}
-	{{ return(adapter.dispatch("error_required_docs", packages=dbt_meta_testing._get_meta_test_namespaces())(kwargs))}}
+{% macro error_required_docs(missing_model_errors, missing_columns_errors, missing_description_errors) %}
+	{{ return(
+        adapter.dispatch("error_required_docs", 
+        packages=dbt_meta_testing._get_meta_test_namespaces())(
+            missing_model_errors, 
+            missing_columns_errors, 
+            missing_description_errors
+            )
+        ) }}
 {% endmacro %}
 
-{% macro default__error_required_docs(kwargs) %}
+{% macro default__error_required_docs(
+            missing_model_errors, 
+            missing_columns_errors, 
+            missing_description_errors
+            ) %}
 
-{% set all_errors = [] %}
-{% if kwargs.models_missing_descriptions | length > 0 %}
+    {% set all_errors = [] %}
+    {% if missing_description_errors | length > 0 %}
 
-    {% do all_errors.append("The following models are missing descriptions:") %}
-    {% do all_errors.append(dbt_meta_testing.format_error_docs(kwargs.models_missing_descriptions)) %}{% endif %}
+        {% do all_errors.append("The following models are missing descriptions:") %}
+        {% do all_errors.append(dbt_meta_testing.format_error_docs(missing_description_errors)) %}{% endif %}
 
-{% if kwargs.models_missing_columns | length > 0 %}
+    {% if missing_columns_errors | length > 0 %}
 
-    {% do all_errors.append("The following columns are missing from the model yml:") %}
-    {% do all_errors.append(dbt_meta_testing.format_error_docs(kwargs.models_missing_columns)) %}{% endif %}
+        {% do all_errors.append("The following columns are missing from the model yml:") %}
+        {% do all_errors.append(dbt_meta_testing.format_error_docs(missing_columns_errors)) %}{% endif %}
 
-{% if kwargs.columns_missing_descriptions | length > 0 %}
+    {% if missing_description_errors | length > 0 %}
 
-    {% do all_errors.append("The following columns are missing from the model yml:") %}
-    {% do all_errors.append(dbt_meta_testing.format_error_docs(kwargs.columns_missing_descriptions)) %}{% endif %}
+        {% do all_errors.append("The following columns are missing from the model yml:") %}
+        {% do all_errors.append(dbt_meta_testing.format_error_docs(missing_description_errors)) %}{% endif %}
 
-{{ dbt_meta_testing.format_raise_error(all_errors | join("\n")) }}
+    {{ return(all_errors | join("\n")) }}
 
 {% endmacro %}

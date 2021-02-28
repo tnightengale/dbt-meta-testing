@@ -2,15 +2,20 @@
 version: 2
 
 models:
+  # dbt_meta_testing_integration_tests:
+  #   +required_docs: true
+    # staging:
+    #   +required_tests: {"unique": 1}
     - name: model_1
       description: "A starter dbt model"
       columns:
           - name: id
             description: ""
             tests:
-                - unique
-                - not_null
-
+              - unique
+              - not_null
+    # marts:
+    # +required_tests: true
     - name: model_2
       description: ""
       tests:
@@ -20,6 +25,6 @@ models:
           - name: id
             description: "The primary key for this table"
             tests:
-                - unique
-                - not_null
-                - mock_schema_test
+              - unique
+              - not_null
+              - mock_schema_test

@@ -7,9 +7,10 @@
     {# /*
     Evaluate if each model meets +required_tests minimum.
     */ #}
-
-    {% set tests_per_model = tests_per_model() %}
+    {% set tests_per_model = dbt_meta_testing.tests_per_model() %}
     {% set test_errors = [] %}
+
+
 
     {{ dbt_meta_testing.logger("models_to_evaluate: " ~ models_to_evaluate | map(attribute="name") | list) }}
     {% for model in models_to_evaluate %}
@@ -22,9 +23,12 @@
 
                 -- If the model has less tests than required by the config
                 {% set full_model = model.unique_id %}
-                {{ dbt_meta_testing.logger(tests_per_model[full_model][test_key] | length) }}
+                
+                {{ dbt_meta_testing.logger('tests per model: ' ~ tests_per_model) }}
 
-                {% set provided_test_count = tests_per_model[full_model][test_key] | length %}
+                -- models that are not declared in properties files will not have keys in tests_per_model
+                {% set provided_test_count = tests_per_model.get(full_model, {}).get(test_key, []) | length %}
+                {{ dbt_meta_testing.logger('provided_test_count: ' ~ provided_test_count) }}
 
                 {% set required_test_count = model.config.required_tests[test_key] %}
 
@@ -56,6 +60,7 @@
         {% set result = none %}
 
     {% endif %}
+
 
     {{ return(result) }}
 

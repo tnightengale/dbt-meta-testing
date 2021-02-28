@@ -5,7 +5,7 @@ Test case for full required_docs run.
 {{ refs_block() }}
 {% if execute %}
 
-    {% set missing_model_errors = ["model_1", "model_2"] %}
+    {% set missing_model_errors = ["model_3", "model_2"] %}
     {% set missing_columns_errors = [["model_3", "id"], ["model_3", "new"], ["model_2", "new"]] %}
     {% set missing_description_errors = [["model_1", "id"]] %}
 

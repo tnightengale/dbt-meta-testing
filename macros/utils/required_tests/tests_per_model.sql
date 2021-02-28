@@ -10,9 +10,9 @@
     */ #}
 
     {% set tests_per_model = {} %}
+    {% set all_tests = dbt_meta_testing.fetch_configured_models("enabled", resource_type="test") %}
 
-    {% set all_tests = dbt_meta_testing.fetch_configured_models("enabled", models=none, resource_type="test") %}
-
+    -- currently only parsing schema tests
     {% set schema_tests = all_tests | selectattr("test_metadata", "defined") | list %}
 
     {% for test_node in schema_tests %}
@@ -22,7 +22,7 @@
         {% for dependent_model in test_node.depends_on.nodes %}
             {% if dependent_model.startswith('model.') %}
 
-                -- If the model has been encountered before
+                -- if the model has been encountered before
                 {% if dependent_model in tests_per_model.keys() %}
 
                     -- If the test on this model has been encountered before
@@ -43,8 +43,18 @@
         {% endfor %}
 
     {% endfor %}
-                
-    {{ dbt_meta_testing.logger('tests_per_model is ' ~ tests_per_model) }}
-    {{ return(tests_per_model) }}
+
+     -- Create dict of empty dict with model unique_id as key to ensure all models are included
+    {% set model_unique_ids = dbt_meta_testing.fetch_configured_models("enabled", resource_type="model") | 
+            map(attribute="unique_id") | list %}
+    {% set result = {} %}
+    {% for id in model_unique_ids %}
+        {% do result.update({id: {}}) %}
+    {% endfor %}
+
+    -- overwrite empty dicts if they have tests
+    {% do result.update(tests_per_model) %}
+
+    {% do return(result) %}
 
 {% endmacro %}

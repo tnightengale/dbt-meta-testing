@@ -19,7 +19,7 @@
     {% if missing_description_errors | length > 0 %}
 
         {% do all_errors.append("The following models are missing descriptions:") %}
-        {% do all_errors.append(dbt_meta_testing.format_error_docs(missing_description_errors)) %}{% endif %}
+        {% do all_errors.append(dbt_meta_testing.format_error_docs(missing_model_errors)) %}{% endif %}
 
     {% if missing_columns_errors | length > 0 %}
 
@@ -28,7 +28,7 @@
 
     {% if missing_description_errors | length > 0 %}
 
-        {% do all_errors.append("The following columns are missing from the model yml:") %}
+        {% do all_errors.append("The following columns are missing descriptions:") %}
         {% do all_errors.append(dbt_meta_testing.format_error_docs(missing_description_errors)) %}{% endif %}
 
     {{ return(all_errors | join("\n")) }}

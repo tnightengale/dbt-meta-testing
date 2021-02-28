@@ -19,7 +19,7 @@
     {% endfor %}
 
     /* 
-    If var `models` is provided, filter fetched models to only those
+    If arg `models` is provided, filter fetched models to only those
     provided, either in space delimited string or via `dbt list -m <selection_syntax>`.
 
     See documentation here for more details: https://github.com/tnightengale/quality-assurance-dbt.

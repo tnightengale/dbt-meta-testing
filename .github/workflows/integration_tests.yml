@@ -20,12 +20,11 @@ jobs:
       with: 
         python-version: 3.8
     
-    - name: Install dbt 0.18.1
-      run: pip install dbt==0.18.1
+    - name: Install dbt 0.19.0
+      run: pip install dbt==0.19.0
 
     - name: Run and Test
       env: 
-        CI_SNOWFLAKE_DBT_DATABASE: ${{ secrets.CI_SNOWFLAKE_DBT_DATABASE }}
         CI_SNOWFLAKE_DBT_ACCOUNT: ${{ secrets.CI_SNOWFLAKE_DBT_ACCOUNT }}
         CI_SNOWFLAKE_DBT_USER: ${{ secrets.CI_SNOWFLAKE_DBT_USER }}
         CI_SNOWFLAKE_DBT_PASS: ${{ secrets.CI_SNOWFLAKE_DBT_PASS }}

@@ -5,8 +5,6 @@ This dbt package contains macros to assert test and documentation coverage from
 `dbt_project.yml` configuration settings.
 
 ## Table of Contents
-- [dbt Meta Testing](#dbt-meta-testing)
-  - [Table of Contents](#table-of-contents)
   - [Install](#install)
   - [Configurations](#configurations)
     - [**Required Tests**](#required-tests)
@@ -24,8 +22,8 @@ Include in `packages.yml`:
 
 ```yaml
 packages:
-  - git: "https://github.com/tnightengale/quality-assurance-dbt"
-    revision: 0.1.2
+  - package: tnightengale/dbt_meta_testing
+    version: 0.2.0
 ```
 For latest release, see
 https://github.com/tnightengale/dbt-meta-testing/releases.
@@ -200,8 +198,8 @@ If any model does not meet the configuration, the `run-operation` will fail
 (non-zero) and display an appropriate error message.
 
 To assert the configuration for only a subset of the configured models (eg. new
-models only in a CI) define the dbt var `models` as a space delimited string of
-model names to use. 
+models only in a CI) pass an argument, `models`, to the macro as a space
+delimited string of model names to use. 
 
 It's also possible to pass in the result of a `dbt ls -m <selection_syntax>`
 command, in order to make use of [dbt node selection

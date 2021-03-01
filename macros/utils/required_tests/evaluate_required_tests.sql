@@ -1,39 +1,47 @@
-{% macro _evaluate_required_tests(models_to_evaluate) %}
+{% macro evaluate_required_tests(models_to_evaluate) %}
+	{{ return(adapter.dispatch("evaluate_required_tests", packages=dbt_meta_testing._get_meta_test_namespaces())(models_to_evaluate))}}
+{% endmacro %}
+
+{% macro default__evaluate_required_tests(models_to_evaluate) %}
 
     {# /*
     Evaluate if each model meets +required_tests minimum.
     */ #}
+    {% set tests_per_model = dbt_meta_testing.tests_per_model() %}
+    {% set test_errors = [] %}
 
-    {% set tests_per_model = _tests_per_model() %}
-    {% set errors = [] %}
 
+
+    {{ dbt_meta_testing.logger("models_to_evaluate: " ~ models_to_evaluate | map(attribute="name") | list) }}
     {% for model in models_to_evaluate %}
-    {{ logger(model) }}
 
         -- If required_tests is dictionary
         {% if model.config.required_tests is mapping %}
-        {{ logger("if reached") }}
-
+        {{ dbt_meta_testing.logger(model.name ~ " if reached") }}
 
             {% for test_key in model.config.required_tests.keys() %}
 
                 -- If the model has less tests than required by the config
                 {% set full_model = model.unique_id %}
-                {{ logger(tests_per_model[full_model][test_key] | length) }}
+                
+                {{ dbt_meta_testing.logger('tests per model: ' ~ tests_per_model) }}
 
-                {% set provided_test_count = tests_per_model[full_model][test_key] | length %}
-
-                {{ logger(provided_test_count) }}
+                -- models that are not declared in properties files will not have keys in tests_per_model
+                {% set provided_test_count = tests_per_model.get(full_model, {}).get(test_key, []) | length %}
+                {{ dbt_meta_testing.logger('provided_test_count: ' ~ provided_test_count) }}
 
                 {% set required_test_count = model.config.required_tests[test_key] %}
 
+                {{ dbt_meta_testing.logger(
+                    "test_key_loop | test_key: " ~ test_key ~ 
+                    " model: " ~ model.name ~
+                    " provided_test_count: " ~ provided_test_count ~
+                    " required_test_count: " ~ required_test_count) }}
 
                 {% if provided_test_count < required_test_count %} 
-                    {% do errors.append(
-                        "Model: '" ~ model.name ~ 
-                        "' Test: '" ~ test_key ~ "' Got: " ~ provided_test_count ~
-                        " Expected: "  ~ required_test_count
-                    ) %}
+
+                    {% do test_errors.append((model.name, test_key, provided_test_count, required_test_count)) %}
+
                 {% endif %}
             
             {% endfor %}
@@ -43,13 +51,17 @@
     {% endfor %}
 
 
-    {% if errors | length > 0 %}
+    {% if test_errors | length > 0 %}
 
-        {{ exceptions.raise_compiler_error(
-            "Insufficient test coverage from the 'required_tests' config on the following models: \n"
-            ~ errors | join('\n')
-        ) }} 
+        {% set result = dbt_meta_testing.error_required_tests(test_errors) %}
+
+    {% else %}
+
+        {% set result = none %}
 
     {% endif %}
+
+
+    {{ return(result) }}
 
 {% endmacro %}

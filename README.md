@@ -237,10 +237,8 @@ Usage:
 ```
 $ dbt run-operation required_docs [--args "{'models': '<space_delimited_models>'}"]
 ```
-**Notes:** 
-1. Run this command _after_ `dbt run`: only models that already exist in the
-   warehouse can be validated for columns that are missing from the model
-   `.yml`.
+**Note:** Run this command _after_ `dbt run`: only models that already exist in
+the warehouse can be validated for columns that are missing from the model `.yml`.
 
 ## Contributions
 Feedback on this project is welcomed and encouraged. Please open an issue or

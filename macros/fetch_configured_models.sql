@@ -10,7 +10,7 @@
 
     {% for node in graph.nodes.values() | selectattr("resource_type", "equalto", resource_type) %}
 
-        {% if meta_config in node.config.keys() and node.config.get("materialized", "") not in ("", "ephemeral") %}
+        {% if meta_config in node.config.keys() %}
 
             {% do configured_models.append(node) %}
 

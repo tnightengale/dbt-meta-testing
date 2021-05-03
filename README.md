@@ -1,4 +1,4 @@
-https://github.com/tnightengale/dbt-meta-testing/workflows/Integration%20Tests/badge.svg
+![buildstatus](https://github.com/tnightengale/dbt-meta-testing/workflows/Integration%20Tests/badge.svg)
 
 # dbt Meta Testing
 This dbt package contains macros to assert test and documentation coverage from

@@ -16,7 +16,7 @@
             ) %}
 
     {% set all_errors = [] %}
-    {% if missing_description_errors | length > 0 %}
+    {% if missing_model_errors | length > 0 %}
 
         {% do all_errors.append("The following models are missing descriptions:") %}
         {% do all_errors.append(dbt_meta_testing.format_error_docs(missing_model_errors)) %}{% endif %}

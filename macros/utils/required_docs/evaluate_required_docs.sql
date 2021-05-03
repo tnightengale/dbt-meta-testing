@@ -14,7 +14,7 @@
 
     {% for model in models_to_evaluate %}
 
-        {% if model.config.required_docs==True %}
+        {% if model.config.required_docs==True and model.config.get("materialized", "") not in ("", "ephemeral")%}
             
             {% set model_columns = adapter.get_columns_in_relation(ref(model.package_name, model.name)) 
                 | map(attribute="column") | list %}

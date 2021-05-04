@@ -7,8 +7,8 @@ This dbt package contains macros to assert test and documentation coverage from
 ## Table of Contents
   - [Install](#install)
   - [Configurations](#configurations)
-    - [**Required Tests**](#required-tests)
-    - [**Required Docs**](#required-docs)
+    - [Required Tests](#required-tests)
+    - [Required Docs](#required-docs)
   - [Usage](#usage)
     - [required_tests (source)](#required_tests-source)
     - [required_docs (source)](#required_docs-source)
@@ -22,7 +22,7 @@ Include in `packages.yml`:
 ```yaml
 packages:
   - package: tnightengale/dbt_meta_testing
-    version: 0.2.1
+    version: 0.3.0
 ```
 For latest release, see
 https://github.com/tnightengale/dbt-meta-testing/releases.
@@ -33,44 +33,59 @@ This package features two meta configs that can be applied to a dbt project:
 [here](https://docs.getdbt.com/reference/model-configs) to learn more about
 model configurations in dbt.
 
-### **Required Tests**
+### Required Tests
 To require test coverage, define the `+required_tests` configuration on a model
 path in `dbt_project.yml`:
 ```yaml
 # dbt_project.yml
 ...
 models:
-    project:
-        staging:
-            +required_tests: {"unique": 1, "not_null": 1}
-        marts:
-            +required_tests: {"unique": 1}
+  project:
+    +required_docs: true
+    marts:
+      +required_tests: {"unique.*|not_null": 1}
+      model_2:
+        +required_tests:
+          "mocker.*|unique": 1
+          "mock_schema_test": 1
+          ".*data_test": 1 
 ```
 
-The `+required_tests` config must be either a `dict` or `None`. All the regular
+The `+required_tests` config must be `None` or a `dict` with `str` keys and `int`
+values. YAML dictionaries are accepted.
+
+All the regular
 dbt configuration hierarchy rules apply. For example, individual model configs
 will override configs from the `dbt_project.yml`:
 ```sql
--- /models/marts/core/your_model.sql
-{{
-    config(required_tests=None)
-}}
+# /models/marts/core/your_model.sql
+
+-- This overrides the config in dbt_project.yml, and this model will not require tests
+{{ config(required_tests=None) }}
 
 SELECT
 ...
 ```
-The provided dictionary can contain any column schema test as a key, followed by
-the minimum number of occurances which must be included on the model. In the
-example above, every model in the `models/marts/` path must include at least one
-`unique` test.
+> **_New in Version 0.3.0_**
 
-Custom column-level schema tests are supported. However, in order to appear in
-the `graph` context variable (which this package parses), they must be applied
-to at least one model in the project prior to compilation. 
+The keys of the config are evaluated against both data and schema tests
+(including any custom tests) using the
+[re.match](https://docs.python.org/3/library/re.html#re.match) function.
 
-Model-level schema tests are currently _not supported_. For example the
-following model-level `dbt_utils.equal_rowcount` test _cannot_ currently be
-asserted via the configuration:
+Therefore, any test restriction which can be expressed in regex can  be
+evaluated. 
+
+For example, in the `dbt_project.yml` above, the path configuration on the `marts` model path
+requires each model in that path to have at least one test that either _starts
+with_ `unique` **or** is an _exact match_ for the `not_null` test.
+
+Schema tests are matched against their common names, (eg. `not_null`,
+`accepted_values`). 
+
+Data tests are matched against their macro name. 
+
+Custom schema tests are matched against their name, without the `test_` prefix, eg. `mock_schema_test`:
+
 ```yaml   
 # models/schema.yml
 ...
@@ -88,7 +103,8 @@ asserted via the configuration:
                 - mock_schema_test
 ```
 
-Models that do not meet their configured test minimums will be listed in the
+Models that do not meet their configured test minimums, because they either lack
+the tests or are not documented, will be listed in the
 error when validated via a `run-operation`:
 ```
 usr@home dbt-meta-testing $ dbt run-operation required_tests
@@ -104,7 +120,7 @@ Encountered an error while running operation: Compilation Error in macro require
 usr@home dbt-meta-testing $ 
 ```
 
-### **Required Docs**
+### Required Docs
 To require documentation coverage, define the `+required_docs` configuration on
 a model path in `dbt_project.yml`:
 ```yaml
@@ -114,7 +130,9 @@ models:
     project:
         +required_docs: true
 ```
-The `+required_docs` config must be a `bool`. It also **does not check ephemeral
+The `+required_docs` config must be a `bool`. 
+
+It also **does not check ephemeral
 models**. This is because it cannot leverage `adapter.get_columns_in_relation()`
 macro on ephemeral models, which it uses to fetch columns from the data
 warehouse and detect columns without documentation. 

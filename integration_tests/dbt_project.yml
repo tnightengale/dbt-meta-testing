@@ -23,7 +23,10 @@ models:
     marts:
       +required_tests: {"unique": 1}
       model_2:
-        +required_tests: {"mocker.*|unique": 1}
+        +required_tests: 
+          "mocker.*|unique": 1
+          "mock_schema_test": 1
+          ".*data_test": 1 
 
 vars:
   running_intergration_tests: true

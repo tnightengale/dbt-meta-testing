@@ -40,51 +40,53 @@ path in `dbt_project.yml`:
 # dbt_project.yml
 ...
 models:
-    project:
-        staging:
-            +required_tests: {"unique": 1, "not_null": 1}
-        marts:
-            +required_tests: {"unique.*|not_null": 1}
+  project:
+    +required_docs: true
+    marts:
+      +required_tests: {"unique.*|not_null": 1}
+      model_2:
+        +required_tests:
+          "mocker.*|unique": 1
+          "mock_schema_test": 1
+          ".*data_test": 1 
 ```
 
-> **_New in Version 0.3.0_**
-
-The `+required_tests` config must be either a `dict` or `None`. 
-> 
-The keys of the config are evaluated against both data and schema tests
-(including any custom tests) using the
-[re.match](https://docs.python.org/3/library/re.html#re.match) function.
-
-Therefore, any test restriction which can be expressed in regex can  be
-evaluated. For example, the above configuration on the `marts` model path
-requires each model in that path to have at least one test that either starts
-with `unique` _or_ a `not_null` test.
-
+The `+required_tests` config must be `None` or a `dict` with `str` keys and `int`
+values. YAML dictionaries are accepted.
 
 All the regular
 dbt configuration hierarchy rules apply. For example, individual model configs
 will override configs from the `dbt_project.yml`:
 ```sql
--- /models/marts/core/your_model.sql
-{{
-    config(required_tests=None)
-}}
+# /models/marts/core/your_model.sql
+
+-- This overrides the config in dbt_project.yml, and this model will not require tests
+{{ config(required_tests=None) }}
 
 SELECT
 ...
 ```
-The provided dictionary can contain any column schema test as a key, followed by
-the minimum number of occurances which must be included on the model. In the
-example above, every model in the `models/marts/` path must include at least one
-`unique` test.
+> **_New in Version 0.3.0_**
 
-Custom column-level schema tests are supported. However, in order to appear in
-the `graph` context variable (which this package parses), they must be applied
-to at least one model in the project prior to compilation. 
+The keys of the config are evaluated against both data and schema tests
+(including any custom tests) using the
+[re.match](https://docs.python.org/3/library/re.html#re.match) function.
 
-Model-level schema tests are currently _not supported_. For example the
-following model-level `dbt_utils.equal_rowcount` test _cannot_ currently be
-asserted via the configuration:
+Therefore, any test restriction which can be expressed in regex can  be
+evaluated. 
+
+For example, in the `dbt_project.yml` above, the path configuration on the `marts` model path
+requires each model in that path to have at least one test that either _starts
+with_ `unique` **or** is an _exact match_ for the `not_null` test.
+
+Schema tests are matched against their common names, (eg. `not_null`,
+`accepted_values`). 
+
+Data tests are matched against their macro name. 
+
+Custom schema tests are matched against their
+tests are matched against their name, without the `test_` prefix, eg. `mock_schema_test`:
+
 ```yaml   
 # models/schema.yml
 ...
@@ -102,7 +104,8 @@ asserted via the configuration:
                 - mock_schema_test
 ```
 
-Models that do not meet their configured test minimums will be listed in the
+Models that do not meet their configured test minimums, either because they lack
+the tests or are not even documented, will be listed in the
 error when validated via a `run-operation`:
 ```
 usr@home dbt-meta-testing $ dbt run-operation required_tests
@@ -128,7 +131,9 @@ models:
     project:
         +required_docs: true
 ```
-The `+required_docs` config must be a `bool`. It also **does not check ephemeral
+The `+required_docs` config must be a `bool`. 
+
+It also **does not check ephemeral
 models**. This is because it cannot leverage `adapter.get_columns_in_relation()`
 macro on ephemeral models, which it uses to fetch columns from the data
 warehouse and detect columns without documentation. 

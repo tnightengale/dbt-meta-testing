@@ -7,8 +7,8 @@ This dbt package contains macros to assert test and documentation coverage from
 ## Table of Contents
   - [Install](#install)
   - [Configurations](#configurations)
-    - [**Required Tests**](#required-tests)
-    - [**Required Docs**](#required-docs)
+    - [Required Tests](#required-tests)
+    - [Required Docs](#required-docs)
   - [Usage](#usage)
     - [required_tests (source)](#required_tests-source)
     - [required_docs (source)](#required_docs-source)
@@ -84,8 +84,7 @@ Schema tests are matched against their common names, (eg. `not_null`,
 
 Data tests are matched against their macro name. 
 
-Custom schema tests are matched against their
-tests are matched against their name, without the `test_` prefix, eg. `mock_schema_test`:
+Custom schema tests are matched against their name, without the `test_` prefix, eg. `mock_schema_test`:
 
 ```yaml   
 # models/schema.yml
@@ -104,8 +103,8 @@ tests are matched against their name, without the `test_` prefix, eg. `mock_sche
                 - mock_schema_test
 ```
 
-Models that do not meet their configured test minimums, either because they lack
-the tests or are not even documented, will be listed in the
+Models that do not meet their configured test minimums, because they either lack
+the tests or are not documented, will be listed in the
 error when validated via a `run-operation`:
 ```
 usr@home dbt-meta-testing $ dbt run-operation required_tests

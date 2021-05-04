@@ -22,7 +22,7 @@ Include in `packages.yml`:
 ```yaml
 packages:
   - package: tnightengale/dbt_meta_testing
-    version: 0.2.1
+    version: 0.3.0
 ```
 For latest release, see
 https://github.com/tnightengale/dbt-meta-testing/releases.
@@ -33,7 +33,7 @@ This package features two meta configs that can be applied to a dbt project:
 [here](https://docs.getdbt.com/reference/model-configs) to learn more about
 model configurations in dbt.
 
-### **Required Tests**
+### Required Tests
 To require test coverage, define the `+required_tests` configuration on a model
 path in `dbt_project.yml`:
 ```yaml
@@ -44,10 +44,24 @@ models:
         staging:
             +required_tests: {"unique": 1, "not_null": 1}
         marts:
-            +required_tests: {"unique": 1}
+            +required_tests: {"unique.*|not_null": 1}
 ```
 
-The `+required_tests` config must be either a `dict` or `None`. All the regular
+> **_New in Version 0.3.0_**
+
+The `+required_tests` config must be either a `dict` or `None`. 
+> 
+The keys of the config are evaluated against both data and schema tests
+(including any custom tests) using the
+[re.match](https://docs.python.org/3/library/re.html#re.match) function.
+
+Therefore, any test restriction which can be expressed in regex can  be
+evaluated. For example, the above configuration on the `marts` model path
+requires each model in that path to have at least one test that either starts
+with `unique` _or_ a `not_null` test.
+
+
+All the regular
 dbt configuration hierarchy rules apply. For example, individual model configs
 will override configs from the `dbt_project.yml`:
 ```sql
@@ -104,7 +118,7 @@ Encountered an error while running operation: Compilation Error in macro require
 usr@home dbt-meta-testing $ 
 ```
 
-### **Required Docs**
+### Required Docs
 To require documentation coverage, define the `+required_docs` configuration on
 a model path in `dbt_project.yml`:
 ```yaml

@@ -65,18 +65,6 @@
 
     {% endfor %}
 
-
-    -- Validate all configured tests are defined 
-    {% for required_test in unique_required_tests %}
-
-        {% if required_test not in unique_defined_tests %}
-
-            {{ return(dbt_meta_testing.error_invalid_config_missing_test(required_test)) }}
-
-        {% endif %}
-
-    {% endfor %}
-
     {{ return(none) }}
 
 {% endmacro %}

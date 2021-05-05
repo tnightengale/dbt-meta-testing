@@ -11,7 +11,7 @@
     {% set tests_per_model = dbt_meta_testing.tests_per_model() %}
     {% set test_errors = [] %}
 
-    {% for model in models_to_evaluate %}
+    {% for model in models_to_evaluate %}{% if model.config.required_tests is mapping %}
         {% for test_key in model.config.required_tests.keys() %}
 
             {% set provided_test_list = tests_per_model[model.unique_id] %}
@@ -23,7 +23,7 @@
                 {% do test_errors.append((model.name, test_key, matching_test_count, required_test_count)) %}
             {% endif %}
             
-        {% endfor %}
+        {% endfor %}{% endif %}
     {% endfor %}
 
 

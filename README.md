@@ -29,7 +29,11 @@ https://github.com/tnightengale/dbt-meta-testing/releases.
 
 ## Configurations
 This package features two meta configs that can be applied to a dbt project:
-`+required_tests` and `+required_docs`. Read the dbt documentation
+
+1. `+required_tests`
+2. `+required_docs`
+
+Read the dbt documentation
 [here](https://docs.getdbt.com/reference/model-configs) to learn more about
 model configurations in dbt.
 
@@ -66,25 +70,35 @@ will override configs from the `dbt_project.yml`:
 SELECT
 ...
 ```
-> **_New in Version 0.3.0_**
+> **_New in Version 0.3.4_**
 
 The keys of the config are evaluated against both data and schema tests
 (including any custom tests) using the
-[re.match](https://docs.python.org/3/library/re.html#re.match) function.
+[re.fullmatch](https://docs.python.org/3/library/re.html#re.fullmatch) function.
 
 Therefore, any test restriction which can be expressed in regex can  be
 evaluated. 
 
-For example, in the `dbt_project.yml` above, the path configuration on the `marts` model path
-requires each model in that path to have at least one test that either _starts
-with_ `unique` **or** is an _exact match_ for the `not_null` test.
+For example:
+```yaml
+# dbt_project.yml
+...
+models:
+  project:
+    +required_docs: true
+    # The following configuration on on the `marts` model path
+    # requires each model in that path to have at least one test that either
+    # starts with "unique" OR is an exact match for the "not_null" test.
+    marts:
+      +required_tests: {"unique.*|not_null": 1} # 
+```
 
 Schema tests are matched against their common names, (eg. `not_null`,
 `accepted_values`). 
 
 Data tests are matched against their macro name. 
 
-Custom schema tests are matched against their name, without the `test_` prefix, eg. `mock_schema_test`:
+Custom schema tests are matched against their name, eg. `mock_schema_test`:
 
 ```yaml   
 # models/schema.yml
@@ -92,7 +106,7 @@ Custom schema tests are matched against their name, without the `test_` prefix, 
     - name: model_2
       description: ""
       tests:
-        - dbt_utils.equal_rowcount:
+        - equal_rowcount:
             compare_model: ref('model_1')
       columns:
           - name: id
@@ -108,7 +122,7 @@ the tests or are not documented, will be listed in the
 error when validated via a `run-operation`:
 ```
 usr@home dbt-meta-testing $ dbt run-operation required_tests
-Running with dbt=0.18.1
+Running with dbt=0.20.0
 Encountered an error while running operation: Compilation Error in macro required_tests (macros/required_tests.sql)
   Insufficient test coverage from the 'required_tests' config on the following models: 
   Model: 'model_1' Test: 'not_null' Got: 1 Expected: 2
@@ -160,7 +174,7 @@ models:
     - name: model_2
       description: ""
       tests:
-        - dbt_utils.equal_rowcount:
+        - equal_rowcount:
             compare_model: ref('model_1')
       columns:
           - name: id
@@ -194,7 +208,7 @@ models:
 Would result in the following error when validated via a `run-operation`:
 ```
 usr@home dbt-meta-testing $ dbt run-operation required_docs
-Running with dbt=0.18.1
+Running with dbt=0.20.0
 Encountered an error while running operation: Compilation Error in macro required_docs (macros/required_docs.sql)
   The following models are missing descriptions:
    - model_2
@@ -228,13 +242,13 @@ subsitution in a dictionary representation.
 
 For example, to run only changed models using dbt's Slim CI feature:
 ```bash
-$ dbt run-operation required_tests --args "{'models':'$(dbt list -m state:modified --state <filepath>)'}"
+dbt run-operation required_tests --args "{'models':'$(dbt list -m state:modified --state <filepath>)'}"
 ```
 
-Alternatively, it's possible to use `git diff` to find changed models; a space
+Alternatively, a space
 delimited string of model names will work as well:
 ```bash
-$ dbt run-operation required_tests --args "{'models':'model1 model2 model3'}"
+dbt run-operation required_tests --args "{'models':'model1 model2 model3'}"
 ```
 
 ### required_tests ([source](macros/required_tests.sql))
@@ -243,7 +257,7 @@ Validates that models meet the `+required_tests` configurations applied in
 
 Usage:
 ```
-$ dbt run-operation required_tests [--args "{'models': '<space_delimited_models>'}"]
+dbt run-operation required_tests [--args "{'models': '<space_delimited_models>'}"]
 ```
 
 ### required_docs ([source](macros/required_tests.sql))
@@ -253,7 +267,7 @@ Validates that models meet the `+required_docs` configurations applied in
 
 Usage:
 ```
-$ dbt run-operation required_docs [--args "{'models': '<space_delimited_models>'}"]
+dbt run-operation required_docs [--args "{'models': '<space_delimited_models>'}"]
 ```
 **Note:** Run this command _after_ `dbt run`: only models that already exist in
 the warehouse can be validated for columns that are missing from the model `.yml`.
@@ -271,7 +285,8 @@ To run the tests locally, ensure you have the correct environment variables set
 according to the targets in
 [./integration_tests/profiles.yml](integration_tests/profiles.yml) and use:
 ```bash
-$ dbt test --data
+cd integration_tests
+dbt test --data
 ```
 
 ### Verified Data Warehouses

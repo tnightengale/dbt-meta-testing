@@ -24,6 +24,6 @@
     {% endif %}
     
     {% set log_bool = log_levels[log_level] >= log_levels[setting_level] %}
-    {{ log(dbt_utils.pretty_time() ~ ' ' ~ log_level ~ ':' ~ this ~ ':' ~ log_message, info=log_bool) }}
+    {{ log(modules.datetime.datetime.now() ~ ' ' ~ log_level ~ ':' ~ this ~ ':' ~ log_message, info=log_bool) }}
 
 {% endmacro %}

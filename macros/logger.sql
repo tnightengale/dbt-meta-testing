@@ -1,5 +1,5 @@
 {% macro logger(log_message, log_level="DEBUG", format='%H:%M:%S') %}
-	{{ return(adapter.dispatch("logger", dbt_meta_testing._get_meta_test_namespaces())(log_message, log_level="DEBUG", format='%H:%M:%S')) }}
+	{{ return(adapter.dispatch("logger", "dbt_meta_testing")(log_message, log_level="DEBUG", format='%H:%M:%S')) }}
 {% endmacro %}
 
 {% macro default__logger(log_message, log_level="DEBUG", format='%H:%M:%S') %}

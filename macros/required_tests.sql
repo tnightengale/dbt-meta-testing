@@ -1,5 +1,5 @@
 {% macro required_tests(models=none) %}
-	{{ return(adapter.dispatch("required_tests", dbt_meta_testing._get_meta_test_namespaces())(models)) }}
+	{{ return(adapter.dispatch("required_tests", "dbt_meta_testing")(models)) }}
 {% endmacro %}
 
 {% macro default__required_tests(models) %}

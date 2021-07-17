@@ -1,5 +1,5 @@
 {% macro format_error_tests(error_list) %}
-	{{ return(adapter.dispatch("format_error_tests", packages=dbt_meta_testing._get_meta_test_namespaces())(error_list))}}
+	{{ return(adapter.dispatch("format_error_tests", "dbt_meta_testing")(error_list))}}
 {% endmacro %}
 
 {% macro default__format_error_tests(error_list) %}

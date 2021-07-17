@@ -1,6 +1,6 @@
 
 {% macro tests_per_model() %}
-	{{ return(adapter.dispatch("tests_per_model", packages=dbt_meta_testing._get_meta_test_namespaces())())}}
+	{{ return(adapter.dispatch("tests_per_model", "dbt_meta_testing")())}}
 {% endmacro %}
 
 {% macro default__tests_per_model() %}

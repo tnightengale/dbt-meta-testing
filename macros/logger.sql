@@ -1,5 +1,5 @@
 {% macro logger(log_message, log_level="DEBUG", format='%H:%M:%S') %}
-	{{ return(adapter.dispatch("logger", dbt_meta_testing._get_meta_test_namespaces())(log_message, log_level="DEBUG", format='%H:%M:%S')) }}
+	{{ return(adapter.dispatch("logger", "dbt_meta_testing")(log_message, log_level="DEBUG", format='%H:%M:%S')) }}
 {% endmacro %}
 
 {% macro default__logger(log_message, log_level="DEBUG", format='%H:%M:%S') %}
@@ -24,6 +24,6 @@
     {% endif %}
     
     {% set log_bool = log_levels[log_level] >= log_levels[setting_level] %}
-    {{ log(dbt_utils.pretty_time() ~ ' ' ~ log_level ~ ':' ~ this ~ ':' ~ log_message, info=log_bool) }}
+    {{ log(modules.datetime.datetime.now() ~ ' ' ~ log_level ~ ':' ~ this ~ ':' ~ log_message, info=log_bool) }}
 
 {% endmacro %}

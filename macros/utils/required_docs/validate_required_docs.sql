@@ -1,5 +1,5 @@
 {% macro validate_required_docs(models_to_validate) %}
-	{{ return(adapter.dispatch("validate_required_docs", packages=dbt_meta_testing._get_meta_test_namespaces())(models_to_validate))}}
+	{{ return(adapter.dispatch("validate_required_docs", "dbt_meta_testing")(models_to_validate))}}
 {% endmacro %}
 
 {% macro default__validate_required_docs(models_to_validate) %}

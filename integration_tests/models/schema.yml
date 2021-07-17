@@ -19,7 +19,7 @@ models:
     - name: model_2
       description: ""
       tests:
-        - dbt_utils.equal_rowcount:
+        - equal_rowcount:
             compare_model: ref('model_1')
       columns:
           - name: id

@@ -1,5 +1,5 @@
 {% macro fetch_configured_models(meta_config, models=none, resource_type="model") %}
-	{{ return(adapter.dispatch("fetch_configured_models", packages=dbt_meta_testing._get_meta_test_namespaces())(meta_config, models, resource_type)) }}
+	{{ return(adapter.dispatch("fetch_configured_models", "dbt_meta_testing")(meta_config, models, resource_type)) }}
 {% endmacro %}
 
 {% macro default__fetch_configured_models(meta_config, models, resource_type) %}

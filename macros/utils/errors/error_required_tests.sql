@@ -1,5 +1,5 @@
 {% macro error_required_tests() %}
-	{{ return(adapter.dispatch("error_required_tests", packages=dbt_meta_testing._get_meta_test_namespaces())(varargs))}}
+	{{ return(adapter.dispatch("error_required_tests", "dbt_meta_testing")(varargs))}}
 {% endmacro %}
 
 {% macro default__error_required_tests(varargs) %}

@@ -1,7 +1,7 @@
 {% macro error_required_docs(missing_model_errors, missing_columns_errors, missing_description_errors) %}
 	{{ return(
         adapter.dispatch("error_required_docs", 
-        packages=dbt_meta_testing._get_meta_test_namespaces())(
+        "dbt_meta_testing")(
             missing_model_errors, 
             missing_columns_errors, 
             missing_description_errors

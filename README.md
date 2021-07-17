@@ -22,7 +22,7 @@ Include in `packages.yml`:
 ```yaml
 packages:
   - package: tnightengale/dbt_meta_testing
-    version: 0.3.1
+    version: 0.3.3
 ```
 For latest release, see
 https://github.com/tnightengale/dbt-meta-testing/releases.
@@ -70,7 +70,7 @@ will override configs from the `dbt_project.yml`:
 SELECT
 ...
 ```
-> **_New in Version 0.3.4_**
+> **_New in Version 0.3.3_**
 
 The keys of the config are evaluated against both data and schema tests
 (including any custom tests) using the

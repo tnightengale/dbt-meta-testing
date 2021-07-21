@@ -86,9 +86,12 @@ For example:
 models:
   project:
     +required_docs: true
-    # The following configuration on on the `marts` model path
-    # requires each model in that path to have at least one test that either
-    # starts with "unique" OR is an exact match for the "not_null" test.
+    # The following configuration on the `marts` model path requires 
+    # each model in that path to have at least one test that either:
+    #
+    #    1. starts with "unique" (note the ".*" regex suffix) OR (note the "|" regex) 
+    #    2. is an exact match for the "not_null" test.
+         
     marts:
       +required_tests: {"unique.*|not_null": 1} # 
 ```

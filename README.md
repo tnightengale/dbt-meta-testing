@@ -93,7 +93,7 @@ models:
     #    2. is an exact match for the "not_null" test.
          
     marts:
-      +required_tests: {"unique.*|not_null": 1} # 
+      +required_tests: {"unique.*|not_null": 1}
 ```
 
 Schema tests are matched against their common names, (eg. `not_null`,

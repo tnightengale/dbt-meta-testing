@@ -3,7 +3,7 @@
 name: 'dbt_meta_testing'
 version: '0.2.0'
 config-version: 2
-require-dbt-version: [">=0.20.0", "<0.21.0"]
+require-dbt-version: [">=0.21.0", "<0.22.0"]
 
 # The "profile" dbt uses for this project.
 profile: 'dbt_meta_testing'
@@ -17,7 +17,7 @@ macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
 target-path: "target"
-clean-targets:         
+clean-targets:
     - "target"
     - "dbt_modules"
 

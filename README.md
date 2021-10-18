@@ -22,7 +22,7 @@ Include in `packages.yml`:
 ```yaml
 packages:
   - package: tnightengale/dbt_meta_testing
-    version: 0.3.3
+    version: 0.3.4
 ```
 For latest release, see
 https://github.com/tnightengale/dbt-meta-testing/releases.
@@ -52,7 +52,7 @@ models:
         +required_tests:
           "mocker.*|unique": 1
           "mock_schema_test": 1
-          ".*data_test": 1 
+          ".*data_test": 1
 ```
 
 The `+required_tests` config must be `None` or a `dict` with `str` keys and `int`
@@ -77,7 +77,7 @@ The keys of the config are evaluated against both data and schema tests
 [re.fullmatch](https://docs.python.org/3/library/re.html#re.fullmatch) function.
 
 Therefore, any test restriction which can be expressed in regex can  be
-evaluated. 
+evaluated.
 
 For example:
 ```yaml
@@ -86,24 +86,24 @@ For example:
 models:
   project:
     +required_docs: true
-    # The following configuration on the `marts` model path requires 
+    # The following configuration on the `marts` model path requires
     # each model in that path to have at least one test that either:
     #
-    #    1. starts with "unique" (note the ".*" regex suffix) OR (note the "|" regex) 
+    #    1. starts with "unique" (note the ".*" regex suffix) OR (note the "|" regex)
     #    2. is an exact match for the "not_null" test.
-         
+
     marts:
       +required_tests: {"unique.*|not_null": 1}
 ```
 
 Schema tests are matched against their common names, (eg. `not_null`,
-`accepted_values`). 
+`accepted_values`).
 
-Data tests are matched against their macro name. 
+Data tests are matched against their macro name.
 
 Custom schema tests are matched against their name, eg. `mock_schema_test`:
 
-```yaml   
+```yaml
 # models/schema.yml
 ...
     - name: model_2
@@ -127,14 +127,14 @@ error when validated via a `run-operation`:
 usr@home dbt-meta-testing $ dbt run-operation required_tests
 Running with dbt=0.20.0
 Encountered an error while running operation: Compilation Error in macro required_tests (macros/required_tests.sql)
-  Insufficient test coverage from the 'required_tests' config on the following models: 
+  Insufficient test coverage from the 'required_tests' config on the following models:
   Model: 'model_1' Test: 'not_null' Got: 1 Expected: 2
   Model: 'model_1' Test: 'mock_schema_test' Got: 0 Expected: 1
-  
+
   > in macro _evaluate_required_tests (macros/utils/required_tests/evaluate_required_tests.sql)
   > called by macro required_tests (macros/required_tests.sql)
   > called by macro required_tests (macros/required_tests.sql)
-usr@home dbt-meta-testing $ 
+usr@home dbt-meta-testing $
 ```
 
 ### Required Docs
@@ -147,12 +147,12 @@ models:
     project:
         +required_docs: true
 ```
-The `+required_docs` config must be a `bool`. 
+The `+required_docs` config must be a `bool`.
 
 It also **does not check ephemeral
 models**. This is because it cannot leverage `adapter.get_columns_in_relation()`
 macro on ephemeral models, which it uses to fetch columns from the data
-warehouse and detect columns without documentation. 
+warehouse and detect columns without documentation.
 
 When applied to a non-ephemeral model, this config will ensure 3 things:
 1. The _model_ has a non-empty description
@@ -191,7 +191,7 @@ models:
 Where `model_2` has a column `new` which is not defined in the `.yml` above:
 ```sql
 -- models/example/model_2.sql
-select 
+select
     *,
     'new' as new
 from {{ ref('model_1') }}
@@ -219,7 +219,7 @@ Encountered an error while running operation: Compilation Error in macro require
    - model_2.new
   The following columns are present in the model yml, but have blank descriptions:
    - model_1.id
-  
+
   > in macro _evaluate_required_docs (macros/utils/required_docs/evaluate_required_docs.sql)
   > called by macro required_docs (macros/required_docs.sql)
   > called by macro required_docs (macros/required_docs.sql)
@@ -236,7 +236,7 @@ If any model does not meet the configuration, the `run-operation` will fail
 
 To assert the configuration for only a subset of the configured models (eg. new
 models only in a CI) pass an argument, `models`, to the macro as a space
-delimited string of model names to use. 
+delimited string of model names to use.
 
 It's also possible to pass in the result of a `dbt ls -m <selection_syntax>`
 command, in order to make use of [dbt node selection
@@ -278,7 +278,7 @@ the warehouse can be validated for columns that are missing from the model `.yml
 ## Contributions
 Feedback on this project is welcomed and encouraged. Please open an issue or
 start a discussion if you would like to request a feature change or contribute
-to this project. 
+to this project.
 
 ## Testing
 The integration tests for this package are located at

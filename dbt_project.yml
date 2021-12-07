@@ -9,10 +9,10 @@ require-dbt-version: ">=1.0.0"
 profile: 'dbt_meta_testing'
 
 # Configuration paths.
-source-paths: ["models"]
+model-paths: ["models"]
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
-data-paths: ["data"]
+seed-paths: ["data"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 

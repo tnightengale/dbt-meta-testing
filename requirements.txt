@@ -1,1 +1,1 @@
-dbt==1.0.0
+dbt-snowflake==1.0.0

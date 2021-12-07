@@ -1,9 +1,9 @@
 
 # Project name.
 name: 'dbt_meta_testing'
-version: '0.2.0'
+version: '0.3.5'
 config-version: 2
-require-dbt-version: [">=0.21.0", "<0.22.0"]
+require-dbt-version: ">=1.0.0"
 
 # The "profile" dbt uses for this project.
 profile: 'dbt_meta_testing'

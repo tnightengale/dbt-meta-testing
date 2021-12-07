@@ -3,7 +3,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   pull_request:
     branches: [ master ]
-    
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -13,17 +13,17 @@ jobs:
     steps:
     - name: Checkout Branch
       uses: actions/checkout@v2
-   
+
     - name: Install Python
       uses: actions/setup-python@v2
-      with: 
+      with:
         python-version: 3.8
-    
+
     - name: Install dbt
       run: pip install -r requirements.txt
 
     - name: Run and Test
-      env: 
+      env:
         CI_SNOWFLAKE_DBT_ACCOUNT: ${{ secrets.CI_SNOWFLAKE_DBT_ACCOUNT }}
         CI_SNOWFLAKE_DBT_USER: ${{ secrets.CI_SNOWFLAKE_DBT_USER }}
         CI_SNOWFLAKE_DBT_PASS: ${{ secrets.CI_SNOWFLAKE_DBT_PASS }}
@@ -33,4 +33,4 @@ jobs:
       run: |
         cd integration_tests
         dbt deps
-        dbt test --data
+        dbt test -s test_type:generic

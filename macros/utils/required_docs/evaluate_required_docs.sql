@@ -28,7 +28,9 @@
 
             {% for column in model_columns %}
 
-                {% set column = column | lower %}
+                {% if var("convert_column_names_to_lower_case", true) %}
+                    {% set column = column | lower %}
+                {% endif %}
 
                 {% if column in model.columns.keys() %}
 

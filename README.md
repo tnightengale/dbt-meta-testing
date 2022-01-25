@@ -274,6 +274,10 @@ dbt run-operation required_docs [--args "{'models': '<space_delimited_models>'}"
 ```
 **Note:** Run this command _after_ `dbt run`: only models that already exist in
 the warehouse can be validated for columns that are missing from the model `.yml`.
+By default, column names are assumed to be lower case in the DBT documentation,
+if this is not the case in your project, setting the variable
+`convert_column_names_to_lower_case` to `false` in `dbt_project.yml` will
+compare the column names in the case they appear.
 
 ## Contributions
 Feedback on this project is welcomed and encouraged. Please open an issue or

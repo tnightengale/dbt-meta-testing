@@ -15,39 +15,12 @@
     {% for model in models_to_evaluate %}
 
         {% if model.config.required_docs==True and model.config.get("materialized", "") not in ("", "ephemeral")%}
-            
-            {% set model_columns = adapter.get_columns_in_relation(ref(model.package_name, model.name)) 
-                | map(attribute="column") | list %}
-            {{ dbt_meta_testing.logger(model_columns | map(attribute="column") | list) }}
 
             {% if model.description == "" %}
 
                 {% do missing_model_errors.append(model.name) %}
 
             {% endif %}
-
-            {% for column in model_columns %}
-
-                {% if var("convert_column_names_to_lower_case", true) %}
-                    {% set column = column | lower %}
-                {% endif %}
-
-                {% if column in model.columns.keys() %}
-
-                    {{ dbt_meta_testing.logger(column ~ " is in " ~ model.columns.keys()) }}
-                    {% if model.columns[column].description == "" %}
-
-                        {% do missing_description_errors.append((model.name, column)) %}
-
-                    {% endif %}
-                
-                {% else %}
-
-                    {% do missing_columns_errors.append((model.name, column)) %}
-
-                {% endif %}
-
-            {% endfor %}
         
         {% endif %}
 

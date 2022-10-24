@@ -22,7 +22,7 @@ Include in `packages.yml`:
 ```yaml
 packages:
   - package: tnightengale/dbt_meta_testing
-    version: 0.3.5
+    version: 0.3.6
 ```
 For latest release, see
 https://github.com/tnightengale/dbt-meta-testing/releases.

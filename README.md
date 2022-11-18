@@ -245,13 +245,13 @@ subsitution in a dictionary representation.
 
 For example, to run only changed models using dbt's Slim CI feature:
 ```bash
-dbt run-operation required_tests --args "{'models':'$(dbt list -m state:modified --state <filepath>)'}"
+dbt run-operation required_tests --args '{models: $(dbt list -m state:modified --state <filepath>)}'
 ```
 
 Alternatively, a space
 delimited string of model names will work as well:
 ```bash
-dbt run-operation required_tests --args "{'models':'model1 model2 model3'}"
+dbt run-operation required_tests --args '{models: model1 model2 model3}'
 ```
 
 ### required_tests ([source](macros/required_tests.sql))
@@ -260,7 +260,7 @@ Validates that models meet the `+required_tests` configurations applied in
 
 Usage:
 ```
-dbt run-operation required_tests [--args "{'models': '<space_delimited_models>'}"]
+dbt run-operation required_tests [--args '{models: <space_delimited_models>}']
 ```
 
 ### required_docs ([source](macros/required_tests.sql))
@@ -270,7 +270,7 @@ Validates that models meet the `+required_docs` configurations applied in
 
 Usage:
 ```
-dbt run-operation required_docs [--args "{'models': '<space_delimited_models>'}"]
+dbt run-operation required_docs [--args '{models: <space_delimited_models>}']
 ```
 **Note:** Run this command _after_ `dbt run`: only models that already exist in
 the warehouse can be validated for columns that are missing from the model `.yml`.

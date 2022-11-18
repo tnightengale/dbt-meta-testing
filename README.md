@@ -245,7 +245,7 @@ subsitution in a dictionary representation.
 
 For example, to run only changed models using dbt's Slim CI feature:
 ```bash
-dbt run-operation required_tests --args '{models:$(dbt list -m state:modified --state <filepath>)}'
+dbt run-operation required_tests --args '{models: $(dbt list -m state:modified --state <filepath>)}'
 ```
 
 Alternatively, a space

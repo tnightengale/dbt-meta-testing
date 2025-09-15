@@ -1,7 +1,10 @@
 
 -- Use the `ref` function to select from other models
 
-{{ config(required_tests=None, required_docs=None) }}
+{{ config(meta={
+    "required_tests": None,
+    "required_docs": None
+}) }}
 select 
     *,
     'a' as new

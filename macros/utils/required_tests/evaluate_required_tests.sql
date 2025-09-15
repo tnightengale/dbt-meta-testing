@@ -5,18 +5,18 @@
 {% macro default__evaluate_required_tests(models_to_evaluate) %}
 
     {# /*
-    Evaluate if each model meets +required_tests minimum.
+    Evaluate if each model meets required_tests minimum.
     */ #}
     
     {% set tests_per_model = dbt_meta_testing.tests_per_model() %}
     {% set test_errors = [] %}
 
-    {% for model in models_to_evaluate %}{% if model.config.required_tests is mapping %}
-        {% for test_key in model.config.required_tests.keys() %}
+    {% for model in models_to_evaluate %}{% if dbt_meta_testing.config_meta_get(model.config, "required_tests") is mapping %}
+        {% for test_key in dbt_meta_testing.config_meta_get(model.config, "required_tests").keys() %}
 
             {% set provided_test_list = tests_per_model[model.unique_id] %}
 
-            {% set required_test_count = model.config.required_tests[test_key] %}
+            {% set required_test_count = dbt_meta_testing.config_meta_get(model.config, "required_tests")[test_key] %}
             {% set matching_test_count = dbt_meta_testing.get_regex_match_count(provided_test_list, test_key) %}
             
             {% if matching_test_count < required_test_count %} 

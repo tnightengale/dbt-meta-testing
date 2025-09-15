@@ -20,7 +20,8 @@ models:
       description: ""
       tests:
         - equal_rowcount:
-            compare_model: ref('model_1')
+            arguments:
+              compare_model: ref('model_1')
       columns:
           - name: id
             description: "The primary key for this table"

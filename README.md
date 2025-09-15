@@ -5,13 +5,15 @@ This [dbt](https://docs.getdbt.com/docs/introduction) package contains macros to
 `dbt_project.yml` configuration settings.
 
 ## Table of Contents
+- [dbt Meta Testing](#dbt-meta-testing)
+  - [Table of Contents](#table-of-contents)
   - [Install](#install)
   - [Configurations](#configurations)
     - [Required Tests](#required-tests)
     - [Required Docs](#required-docs)
   - [Usage](#usage)
-    - [required_tests (source)](#required_tests-source)
-    - [required_docs (source)](#required_docs-source)
+    - [required\_tests (source)](#required_tests-source)
+    - [required\_docs (source)](#required_docs-source)
   - [Contributions](#contributions)
   - [Testing](#testing)
     - [Verified Data Warehouses](#verified-data-warehouses)
@@ -22,7 +24,7 @@ Include in `packages.yml`:
 ```yaml
 packages:
   - package: tnightengale/dbt_meta_testing
-    version: 0.3.6
+    version: 0.4.0
 ```
 For latest release, see
 https://github.com/tnightengale/dbt-meta-testing/releases.
@@ -30,32 +32,39 @@ https://github.com/tnightengale/dbt-meta-testing/releases.
 ## Configurations
 This package features two meta configs that can be applied to a dbt project:
 
-1. `+required_tests`
-2. `+required_docs`
+1. `required_tests`
+2. `required_docs`
+
+The recommended approach supported both in dbt Core and Fusion is to store the config in the `meta` key.
+
+Storing the configs outside of `meta` like it was done before version 0.4.0 is still supported in dbt Core, but not Fusion.
 
 Read the dbt documentation
 [here](https://docs.getdbt.com/reference/model-configs) to learn more about
 model configurations in dbt.
 
 ### Required Tests
-To require test coverage, define the `+required_tests` configuration on a model
+To require test coverage, define the `required_tests` configuration on a model
 path in `dbt_project.yml`:
 ```yaml
 # dbt_project.yml
 ...
 models:
   project:
-    +required_docs: true
+    +meta:
+      required_docs: true
     marts:
-      +required_tests: {"unique.*|not_null": 1}
+      +meta:
+        required_tests: {"unique.*|not_null": 1}
       model_2:
-        +required_tests:
+        +meta:
+          required_tests:
           "mocker.*|unique": 1
           "mock_schema_test": 1
           ".*data_test": 1
 ```
 
-The `+required_tests` config must be `None` or a `dict` with `str` keys and `int`
+The `required_tests` config must be `None` or a `dict` with `str` keys and `int`
 values. YAML dictionaries are accepted.
 
 All the regular
@@ -85,7 +94,8 @@ For example:
 ...
 models:
   project:
-    +required_docs: true
+    +meta:
+      required_docs: true
     # The following configuration on the `marts` model path requires
     # each model in that path to have at least one test that either:
     #
@@ -93,7 +103,8 @@ models:
     #    2. is an exact match for the "not_null" test.
 
     marts:
-      +required_tests: {"unique.*|not_null": 1}
+      +meta:
+        required_tests: {"unique.*|not_null": 1}
 ```
 
 Schema tests are matched against their common names, (eg. `not_null`,
@@ -138,16 +149,17 @@ usr@home dbt-meta-testing $
 ```
 
 ### Required Docs
-To require documentation coverage, define the `+required_docs` configuration on
+To require documentation coverage, define the `required_docs` configuration on
 a model path in `dbt_project.yml`:
 ```yaml
 # dbt_project.yml
 ...
 models:
     project:
-        +required_docs: true
+        +meta:
+          required_docs: true
 ```
-The `+required_docs` config must be a `bool`.
+The `required_docs` config must be a `bool`.
 
 It also **does not check ephemeral
 models**. This is because it cannot leverage `adapter.get_columns_in_relation()`
@@ -205,7 +217,8 @@ And all models in the example path require docs:
 models:
     project:
         example:
-            +required_docs: true
+            +meta:
+              required_docs: true
 ```
 
 Would result in the following error when validated via a `run-operation`:
@@ -227,7 +240,7 @@ usr@home dbt-meta-testing $
 ```
 
 ## Usage
-To assert either the `+required_tests` or `+required_docs` configuration, run
+To assert either the `required_tests` or `required_docs` configuration, run
 the correpsonding macro as a `run-operation` within the dbt CLI.
 
 By default the macro will check all models with the corresponding configuration.
@@ -238,14 +251,14 @@ To assert the configuration for only a subset of the configured models (eg. new
 models only in a CI) pass an argument, `models`, to the macro as a space
 delimited string of model names to use.
 
-It's also possible to pass in the result of a `dbt ls -m <selection_syntax>`
+It's also possible to pass in the result of a `dbt ls -s <selection_syntax>`
 command, in order to make use of [dbt node selection
 syntax](https://docs.getdbt.com/reference/node-selection/syntax). Use shell
 subsitution in a dictionary representation.
 
 For example, to run only changed models using dbt's Slim CI feature:
 ```bash
-dbt run-operation required_tests --args "{'models':'$(dbt list -m state:modified --state <filepath>)'}"
+dbt run-operation required_tests --args "{'models':'$(dbt list -s state:modified --state <filepath>)'}"
 ```
 
 Alternatively, a space
@@ -255,7 +268,7 @@ dbt run-operation required_tests --args "{'models':'model1 model2 model3'}"
 ```
 
 ### required_tests ([source](macros/required_tests.sql))
-Validates that models meet the `+required_tests` configurations applied in
+Validates that models meet the `required_tests` configurations applied in
 `dbt_project.yml`. Typically used only as a `run-operation` in a CI pipeline.
 
 Usage:
@@ -264,7 +277,7 @@ dbt run-operation required_tests [--args "{'models': '<space_delimited_models>'}
 ```
 
 ### required_docs ([source](macros/required_tests.sql))
-Validates that models meet the `+required_docs` configurations applied in
+Validates that models meet the `required_docs` configurations applied in
 `dbt_project.yml`. Typically used only as a `run-operation` in a CI pipeline.
 
 

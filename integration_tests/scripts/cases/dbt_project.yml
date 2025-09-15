@@ -3,8 +3,11 @@ config-version: 2
 
 models:
   dbt_meta_testing_integration_tests:
-    +required_docs: true
+    +meta:
+      required_docs: true
     staging:
-      +required_tests: {"unique": 1}
+      +meta:
+        required_tests: {"unique": 1}
     marts:
-      +required_tests: true
+      +meta:
+        required_tests: true

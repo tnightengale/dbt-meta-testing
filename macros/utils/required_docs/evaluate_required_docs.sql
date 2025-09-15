@@ -5,7 +5,7 @@
 {% macro default__evaluate_required_docs(models_to_evaluate) %}
 
     {# /*
-    Evaluate if each model meets +required_docs config.
+    Evaluate if each model meets required_docs config.
     */ #}
 
     {% set missing_model_errors = [] %}
@@ -14,7 +14,7 @@
 
     {% for model in models_to_evaluate %}
 
-        {% if model.config.required_docs==True and model.config.get("materialized", "") not in ("", "ephemeral")%}
+        {% if dbt_meta_testing.config_meta_get(model.config, "required_docs")==True and model.config.get("materialized", "") not in ("", "ephemeral")%}
             
             {% set model_columns = adapter.get_columns_in_relation(ref(model.package_name, model.name)) 
                 | map(attribute="column") | list %}

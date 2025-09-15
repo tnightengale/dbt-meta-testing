@@ -10,7 +10,7 @@
 
     {% for node in graph.nodes.values() | selectattr("resource_type", "equalto", resource_type) %}
 
-        {% if meta_config in node.config.keys() %}
+        {% if (meta_config in node.config.keys()) or (meta_config in node.config.get("meta", {}).keys()) %}
 
             {% do configured_models.append(node) %}
 

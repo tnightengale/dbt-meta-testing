@@ -6,3 +6,4 @@ logs/
 .user.yml
 .vscode
 .dbt_env
+dbt_internal_packages/

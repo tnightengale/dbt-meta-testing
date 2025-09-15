@@ -17,19 +17,23 @@ clean-targets: ["target", "dbt_modules"]
 
 models:
   dbt_meta_testing_integration_tests:
-    +required_docs: true
+    +meta:
+      required_docs: true
     staging:
-      +required_tests: true
+      +meta:
+        required_tests: true
     marts:
-      +required_tests: {"unique": 1}
+      +meta:
+        required_tests: {"unique": 1}
       model_2:
-        +required_tests:
-          "mocker.*|unique": 1
-          "mock_schema_test": 1
-          ".*data_test": 1
+        +meta: 
+          required_tests:
+            "mocker.*|unique": 1
+            "mock_schema_test": 1
+            ".*data_test": 1
 
 vars:
-  running_intergration_tests: true
+  running_intergration_tests: false
 
 dispatch:
   - macro_namespace: dbt_meta_testing

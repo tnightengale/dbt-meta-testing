@@ -5,19 +5,19 @@
 {% macro default__validate_required_tests(models_to_validate) %}
 
     {# /*
-    Validate that all +required_tests configs are either dict or None 
+    Validate that all required_tests configs are either dict or None 
     and that all keys in a dict are defined tests.
     */ #}
 
     {{ dbt_meta_testing.logger('models to validate are ' ~ models_to_validate) }}
 
     -- # TO DO: break out into function that asserts against a contract
-    -- Fetch unique tests from +required_tests config
+    -- Fetch unique tests from required_tests config
     {% set all_required_tests = [] %}
 
     {% for model in models_to_validate %}
 
-        {% set config = model.config.required_tests %}
+        {% set config = dbt_meta_testing.config_meta_get(model.config, "required_tests") %}
 
         {{ dbt_meta_testing.logger('config is: ' ~ config) }}
 
